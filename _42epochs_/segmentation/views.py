@@ -1,6 +1,6 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def index(request):
-    return HttpResponse('Ремонтные работы')
+    return render(request, 'segmentation/index.html')

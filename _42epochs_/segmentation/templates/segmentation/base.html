@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link type="text/css"  rel="stylesheet" href="{% static 'segmentation/css/reset.css' %}">
+	<link type="text/css" href="{% static 'segmentation/css/styles.css' %}" rel="stylesheet" />
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<title>{{ title }}</title>
+</head>
+<body>
+	<header class="header">
+	</header>
+	<main class="main">
+        <!-- Блок контента -->
+		<!-- The video -->
+        {% block content %}
+        {% endblock %}
+
+	</main>
+		<footer class="footer">
+		<div class="footer-content">
+		<div class="footer-info">
+			<p>Авторы проекта:</p>
+			<a class="person" href="https://vk.com/ohlomonchick337" target="_blank">
+				<div class="vk">
+				<img class="icon" src="{% static 'learning/images/footer/VK_Monochrome_Logo_t.png' %}">
+				</div>
+				<p>Проскурин Дмитрий</p>
+			</a>
+            <a class="person" href="https://vk.com/ohlomonchick337" target="_blank">
+				<div class="vk">
+				<img class="icon" src="{% static 'learning/images/footer/VK_Monochrome_Logo_t.png' %}">
+				</div>
+				<p>Батейкина Анастасия</p>
+			</a>
+
+		</div>
+		<div class="footer-info">
+			<div class="email">
+				<p>Google Colab:</p>
+				<a>--ссылочка--</a>
+			</div>
+		</div>
+		</div>
+            {% if messages %}
+                {% for message in messages %}
+                {% if message.tags %}  <script>alert('<div class=\'alertm_h1\'>Поздравляем!</div>{{ message }}')</script> {% endif %}
+                {% endfor %}
+            {% endif %}
+		<div class="disclaimer">
+			© 42 EPOCHS
+		</div>
+	</footer>
+</body>
+</html>

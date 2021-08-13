@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+
+@font-face {
+    font-family: 'Roboto';
+    /*src: url('./fonts/Bahnschrift.ttf') format('truetype'); !* Chrome < 4, Legacy iOS *!*/
+}
+
+
+body {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	font-size: 2vh;
+	background: #000;
+	color: #fff;
+}
+
+
+a{
+	outline: none !important;
+}
+
+h1{
+	text-transform: uppercase;
+}
+
+p a{
+	color: #3498DB;
+}
+
+
+
+/*Footer*/
+
+
+.footer{
+	margin-top: 15vh;
+	border-top: 1px solid gray;
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 30vh;
+	background: #000;
+	justify-content: center;
+}
+
+.footer-content{
+	padding-left: 8vh;
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 22vh;
+	background: #000;
+	justify-content: center;
+	align-items: center;
+}
+
+.footer-info {
+	margin-top: 7vh;
+	height: 100%;
+	color: white;
+	width: 33vh;
+	margin-left: 2vh;
+}
+
+.footer-info p {
+	color:	#3498DB;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 2.5vh;
+}
+
+.person {
+	text-decoration: none;
+	margin-top: 1vh;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+.email {
+	color: white;
+	display: block;
+	width: 100%;
+	margin-top: 1vh;
+}
+
+.email p {
+	color: #3498DB;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 2.5vh;
+}
+
+.email a {
+	margin-left: 0.4vh;
+	margin-top: 1vh;
+	margin-right: 1vh;
+}
+
+.person p {
+	margin-left: 1.5vh;
+	color: white;
+}
+
+.icon {
+	display: none;
+}
+
+.vk {
+	left: 10%;
+	width: 6vh;
+	height: 5vh;
+	background-image: url("../images/footer/VK_Monochrome_Logo_t.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.disclaimer {
+	padding-left: 5.5vh;
+	bottom: 0%;
+	display: flex;
+	position: absolute;
+	color: #8d8f97;
+	font-size: 1.7vh;
+	border-top: 1px solid gray;
+	height: 6vh;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+
+
+/*end Footer*/
