@@ -14,8 +14,7 @@ def index(request):
 class AddCT(CreateView):
     form_class = AddCTForm
     template_name = 'segmentation/addpage.html'
-    success_url = reverse_lazy('home')
-    login_url = reverse_lazy('home')
+    # success_url = reverse_lazy('home')
     raise_exception = True
 
     def form_valid(self, form):
