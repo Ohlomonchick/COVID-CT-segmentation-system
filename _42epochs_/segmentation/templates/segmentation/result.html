@@ -1,0 +1,23 @@
+{% extends 'segmentation/base.html' %}
+
+{% block content %}
+    <h1>Процент поражения: {{ct.title}}</h1><br><br>
+    <h1>Исходное изображение: </h1>
+    {% if ct.ct_image %}
+    <p><img class="result-image ct-img" src="{{ ct.ct_image.url }}"></p>
+    {% endif %}
+
+    <h1>Сегментированное изображение: </h1>
+    {% if ct.segmented_image %}
+    <p><img class="ct-segmented" src="{{ ct.segmented_image.url }}"></p>
+    {% endif %}
+
+    <h1>Маска: </h1>
+    {% if ct.mask %}
+    <p><img class="ct-mask" src="{{ ct.mask.url }}"></p>
+    {% endif %}
+
+    <a class="profile-link" href="{% url 'home' %}">На главную</a>
+
+
+{% endblock %}

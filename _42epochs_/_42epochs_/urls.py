@@ -14,10 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+# from django.template.backends import django
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
+from django.contrib.staticfiles.urls import static
+
+from _42epochs_ import settings
 from segmentation.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('segmentation.urls'))
 ]
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

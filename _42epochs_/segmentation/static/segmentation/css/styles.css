@@ -135,3 +135,44 @@ p a{
 
 
 /*end Footer*/
+
+/* MainPage */
+
+.profile-link {
+	margin-top: 1vh;
+	position: static;
+
+	border-radius: 0.8vh;
+    box-shadow: 0 0 2px black;
+    font-size: 110%;
+    padding-top: 0.68vh;
+    text-align: center;
+    vertical-align: bottom;
+    margin-right: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    color: white;
+    height: 4vh;
+    max-width: 22vh;
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.profile-link:hover{
+	display: block;
+	background-color: white;
+	text-shadow: 0 0 1px black;
+	border-color: white;
+	color: black;
+}
+
+/* end MainPage */
+
+/* ResultPage */
+
+.result-image {
+	max-width: 20vh;
+}
