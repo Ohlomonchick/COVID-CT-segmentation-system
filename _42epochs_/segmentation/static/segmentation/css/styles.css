@@ -56,7 +56,7 @@ p a{
 }
 
 .footer-info {
-	margin-top: 7vh;
+	margin-top: 4.5vh;
 	height: 100%;
 	color: white;
 	width: 33vh;
@@ -116,6 +116,11 @@ p a{
 	background-image: url("../images/footer/VK_Monochrome_Logo_t.png");
 	background-size: contain;
 	background-repeat: no-repeat;
+}
+
+.github {
+	filter: invert(1);
+	background-image: url("../images/footer/github_PNG40.png");
 }
 
 .disclaimer {
