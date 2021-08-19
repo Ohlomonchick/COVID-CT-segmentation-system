@@ -1,7 +1,8 @@
 {% extends 'segmentation/base.html' %}
 
 {% block content %}
-    <h1>Процент поражения: {{ct.damage}}%</h1><br><br>
+    <br><h1>Ground Glass: {{ ct.ground_glass }}% | Consolidation: {{ ct.consolidation }}%</h1><br>
+    <h1>Общий процент поражения: {{ct.damage}}%</h1><br><br>
     <h1>Исходное изображение: </h1>
     {% if ct.ct_image %}
     <p><img class="result-image ct-img" src="{{ ct.ct_image.url }}"></p>

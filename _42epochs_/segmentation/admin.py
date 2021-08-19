@@ -7,7 +7,9 @@ from .models import *
 class CTAdmin(admin.ModelAdmin):
     list_display = ('ct_image',
                     'segmented_image',
-                    'mask',
+                    # 'mask',
+                    'ground_glass',
+                    'consolidation',
                     'damage',
                     'time_create',)
 

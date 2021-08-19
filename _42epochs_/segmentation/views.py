@@ -33,11 +33,11 @@ class AddCT(CreateView):
 
         img = cv2.imread(ct.ct_image.path)
         img = cv2.resize(img, (512, 512))
-        print('BEFORE CHANNEL CHANGE')
-        print(' -------------- ' + str(img.shape) + ' --------------')
+        # print('BEFORE CHANNEL CHANGE')
+        # print(' -------------- ' + str(img.shape) + ' --------------')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        print('AFTER CHANNEL CHANGE')
-        print(' -------------- ' + str(img.shape) + ' --------------')
+        # print('AFTER CHANNEL CHANGE')
+        # print(' -------------- ' + str(img.shape) + ' --------------')
 
         img = np.float32(img)
 
@@ -47,16 +47,20 @@ class AddCT(CreateView):
         print(str(title1) + ' ' + str(percentage1) + ' % ')
         print(str(title2) + ' ' + str(percentage2) + ' % ')
 
-        out = out * 255
-        out = out.astype(np.uint8)
+        # out = out * 255
+        # print('OUT SHAPE')
+        # out = out.astype(np.uint8)
+        im = Image.fromarray(np.uint8(out)).convert('RGB')
+        print(out)
 
-        im = Image.fromarray(out)
         save_path = os.path.join(settings.MEDIA_ROOT, 'images')
         save_path = os.path.join(save_path, 'segmented_image_' + str(ct.pk) + '.png')
         im.save(save_path)
 
         ct.segmented_image = save_path
         ct.damage = percentage1 + percentage2
+        ct.ground_glass = percentage1
+        ct.consolidation = percentage2
         ct.save()
 
         return redirect('result/' + str(ct.id))
