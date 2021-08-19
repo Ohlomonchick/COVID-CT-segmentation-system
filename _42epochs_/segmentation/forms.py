@@ -44,6 +44,6 @@ class AddCTForm(forms.ModelForm):
             raise ValidationError('Нужно изображение с соотношением сторон 1 к 1')
         os.remove(path)
 
-        cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
+        # cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
 
         return image
