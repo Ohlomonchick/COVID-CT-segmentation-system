@@ -2,7 +2,7 @@ from django.db import models
 
 
 class CT(models.Model):
-    ct_image = models.ImageField(upload_to="images", verbose_name="Исходное КТ-изображение", null=True)
+    ct_image = models.ImageField(upload_to="images", verbose_name="Выберите файл", null=True)
     segmented_image = models.ImageField(upload_to="segments/%Y/",  verbose_name="Сегментированное изображение", null=True)
     mask = models.ImageField(upload_to="masks",  verbose_name="Маска", null=True)
     damage = models.IntegerField(verbose_name='Процент поражения', default=0)

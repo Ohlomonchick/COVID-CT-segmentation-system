@@ -1,24 +1,38 @@
 {% extends 'segmentation/base.html' %}
 
 {% block content %}
-    <br><h1>Ground Glass: {{ ct.ground_glass }}% | Consolidation: {{ ct.consolidation }}%</h1><br>
-    <h1>Общий процент поражения: {{ct.damage}}%</h1><br><br>
-    <h1>Исходное изображение: </h1>
-    {% if ct.ct_image %}
-    <p><img class="result-image ct-img" src="{{ ct.ct_image.url }}"></p>
-    {% endif %}
-
-    <h1>Сегментированное изображение: </h1>
-    {% if ct.segmented_image %}
-    <p><img class="ct-segmented" src="{{ ct.segmented_image.url }}"></p>
-    {% endif %}
+    <h1 class="page_name">Результат</h1>
+    <div class="results">
+        <p class="result-text">Ground Glass:<span class="percent">{{ ct.ground_glass }}%</span> </p>
+        <p class="result-text">Consolidation:<span class="percent">{{ ct.consolidation }}%</span> </p>
+    </div>
+    <p class="result-text">Общий процент поражения:<span class="percent">{{ct.damage}}%</span></p>
+    <div class="result-images">
+        <div class="res-image res-image_first">
+            <h2>Исходное изображение: </h2>
+            {% if ct.ct_image %}
+            <img class="result-image ct-img" src="{{ ct.ct_image.url }}">
+            {% endif %}
+        </div>
+        <div class="res-image">
+            <h2>Сегментированное изображение: </h2>
+            {% if ct.segmented_image %}
+            <img class="ct-segmented" src="{{ ct.segmented_image.url }}">
+            {% endif %}
+        </div>
+    </div>
 
 {#    <h1>Маска: </h1>#}
 {#    {% if ct.mask %}#}
 {#    <p><img class="ct-mask" src="{{ ct.mask.url }}"></p>#}
 {#    {% endif %}#}
 
-    <a class="profile-link" href="{% url 'home' %}">На главную</a>
+    <a class="segment"  href="{% url 'home' %}">На главную</a>
 
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('.footer').css({"margin-top": "5vh"});
+    });
+    </script>
 
 {% endblock %}

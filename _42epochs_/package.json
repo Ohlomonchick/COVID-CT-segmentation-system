@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "ui5-middleware-livereload": "^0.5.5"
+  }
+}

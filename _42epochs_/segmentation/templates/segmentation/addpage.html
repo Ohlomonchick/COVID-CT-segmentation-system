@@ -1,7 +1,7 @@
 {% extends 'segmentation/base.html' %}
 
 {% block content %}
-<h1>{{title}}</h1>
+<h1 class="page_name">{{title}}</h1>
 
 <form  method="post" enctype="multipart/form-data">
 {#action="{% url 'add_page' %}"#}
@@ -9,13 +9,70 @@
 
     <div class="form-error">{{ form.non_field_errors }}</div>
 
-{% for f in form %}
-<p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}}: </label>{{ f }}</p>
-<div class="form-error">{{ f.errors }}</div>
-{% endfor %}
+    {% for f in form %}
+        <div class="file-upload">
+                <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}} </label>{{ f }}</p>
+        </div>
 
+        <div id="preview"></div>
+        <div id="file-name"></div>
 
-    <button type="submit">Сегментировать</button>
+        <div class="form-error">{{ f.errors }}</div>
+    {% endfor %}
+
+    <button class="segment" type="submit">Сегментировать</button>
 </form>
 
+<script type="text/javascript">
+$('.uploaded-file').on('change', function () {
+    getFileParam();
+    $('.footer').css({"margin-top": "5vh"});
+});
+
+function getFileParam() {
+    try {
+        var file = document.getElementsByClassName('uploaded-file').item(0).files[0];
+        if (file) {
+            document.getElementById('file-name').innerHTML = file.name;
+
+            if (/\.(jpe?g|bmp|gif|png)$/i.test(file.name)) {
+                var elPreview = document.getElementById('preview');
+                elPreview.innerHTML = '';
+                var newImg = document.createElement('img');
+                newImg.className = "preview-img";
+
+                if (typeof file.getAsDataURL=='function') {
+                    if (file.getAsDataURL().substr(0,11)=='data:image/') {
+                        newImg.setAttribute('src',file.getAsDataURL());
+                        elPreview.appendChild(newImg);
+                    }
+                }else {
+                    var reader = new FileReader();
+                    reader.onloadend = function(evt) {
+                        if (evt.target.readyState == FileReader.DONE) {
+                            newImg.setAttribute('src', evt.target.result);
+                            elPreview.appendChild(newImg);
+                        }
+                    };
+
+                    var blob;
+                    if (file.slice) {
+                        blob = file.slice(0, file.size);
+                    }else if (file.webkitSlice) {
+                            blob = file.webkitSlice(0, file.size);
+                        }else if (file.mozSlice) {
+                            blob = file.mozSlice(0, file.size);
+                        }
+                    reader.readAsDataURL(blob);
+                }
+            }
+        }
+    }catch(e) {
+        alert("file3")
+        var file = document.getElementsByClassName('uploaded-file').item(0).value;
+        file = file.replace(/\\/g, "/").split('/').pop();
+        document.getElementById('file-name').innerHTML = file;
+    }
+}
+</script>
 {% endblock %}

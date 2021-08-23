@@ -21,9 +21,9 @@ class AddCTForm(forms.ModelForm):
         fields = ['ct_image']
         widgets = {
 
-            # 'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'title': forms.TextInput(attrs={'class': 'uploaded-file'}),
             # 'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
-            'ct_image': forms.FileInput(attrs={'class': 'form-input'})
+            'ct_image': forms.FileInput(attrs={'class': 'uploaded-file'})
         }
 
     def clean_ct_image(self):
