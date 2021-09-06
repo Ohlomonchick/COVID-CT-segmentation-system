@@ -11,6 +11,7 @@ class CTAdmin(admin.ModelAdmin):
                     'ground_glass',
                     'consolidation',
                     'damage',
+                    'category',
                     'time_create',)
 
 

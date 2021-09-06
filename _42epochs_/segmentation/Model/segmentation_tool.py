@@ -65,6 +65,18 @@ class Segmentation():
             title = 'consolidation'
         return percentage, title
 
+    def predict_cat(self, gr_glass, consolidation):
+        if (consolidation == 0 and gr_glass == 0):
+            return 0
+        elif (consolidation == 0 and gr_glass < 25):
+            return 1
+        elif (consolidation == 0 and gr_glass >= 25 and gr_glass < 50):
+            return 2
+        elif (consolidation > 0 and (consolidation + gr_glass) < 75):
+            return 3
+        elif ((consolidation + gr_glass) >= 75):
+            return 4
+
     def main(self):
         # device = torch.cuda.set_device(0)
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -98,9 +110,12 @@ class Segmentation():
         percentage1, title1 = self.calc_lesion(semantic_map, 0)
         percentage2, title2 = self.calc_lesion(semantic_map, 1)
 
+        # предсказание класса
+        category = self.predict_cat(percentage1, percentage2)
+
         # визуализация
         out = self.draw_masks(self.image, semantic_map)
 
-        return (percentage1, title1), (percentage2, title2), out
+        return (percentage1, title1), (percentage2, title2), out, category
 
 

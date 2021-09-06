@@ -28,11 +28,15 @@ class AddCTForm(forms.ModelForm):
 
     def clean_ct_image(self):
         image = self.files['ct_image']
+        path = os.path.join(settings.MEDIA_ROOT, 'tmp')
+        path = os.path.join(path, 'temporary.png')
+        if os.path.exists(path):
+            os.remove(path)
         # path = image.temporary_file_path()
-        if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg'):
+        if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg' or str(image)[-4:] == 'jpeg'):
             raise ValidationError('Доступна обработка только .png и .jpg изображений')
 
-        tmp_file = default_storage.save('tmp/temporary.' + str(image)[-3:], ContentFile(image.read()))
+        tmp_file = default_storage.save('tmp/temporary.png', ContentFile(image.read()))
         path = os.path.join(settings.MEDIA_ROOT, tmp_file)
 
         print(path)
@@ -40,9 +44,12 @@ class AddCTForm(forms.ModelForm):
         pic = cv2.imread(path)
         if pic.shape[0] < 256:
             raise ValidationError('Нужно изображение размером 256x256 и больше')
-        if pic.shape[0] != pic.shape[1]:
+        # if pic.shape[0] != pic.shape[1]:
+        a = max(pic.shape[0:2])
+        b = min(pic.shape[0:2])
+        if b * 1.1 < a:
             raise ValidationError('Нужно изображение с соотношением сторон 1 к 1')
-        os.remove(path)
+        # os.remove(path)
 
         # cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
 

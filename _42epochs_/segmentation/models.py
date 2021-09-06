@@ -8,6 +8,7 @@ class CT(models.Model):
     damage = models.IntegerField(verbose_name='Процент поражения', default=0)
     ground_glass = models.IntegerField(verbose_name='Ground glass', default=0, null=True)
     consolidation = models.IntegerField(verbose_name='Consolidation ', default=0, null=True)
+    category = models.IntegerField(verbose_name='Consolidation ', default=0, null=True)
 
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
 
