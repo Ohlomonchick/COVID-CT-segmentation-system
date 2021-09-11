@@ -161,6 +161,18 @@ form {
 
 .result-text{font-family: 'Comfortaa';font-weight: 500;font-size: 14px;margin-bottom: 20px;}
 
+.ground-glass::after {
+	color: gray;
+	content: "Матовое стекло";
+	font-size: 0.9vh;
+}
+
+.consolidation::after {
+	color: gray;
+	content: "Консолидация";
+	font-size: 0.9vh;
+}
+
 .percent{color: #13a688;font-weight: 700;font-family: 'Roboto';padding-left: 5px;}
 
 .result-images{display: flex;padding-top: 10px;margin-bottom: 40px;}
@@ -184,6 +196,15 @@ form {
 
 .result-image {
 	max-width: 256px;
+}
+
+.color-cube {
+	display: inline-block;
+	height: 14px;
+	width: 20px;
+	margin-right: 1vh;
+	background-color: red;
+	border: solid 1px black;
 }
 
 /* end ResultPage */

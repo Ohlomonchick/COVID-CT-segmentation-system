@@ -3,9 +3,9 @@
 {% block content %}
     <h1 class="page_name">Результат</h1>
     <div class="results">
-        <p class="result-text">Ground Glass:<span class="percent">{{ ct.ground_glass }}%</span> </p>
+        <div style="background-color: yellow;" class="color-cube"></div><p class="result-text ground-glass">Ground Glass :<span class="percent">{{ ct.ground_glass }}%</span> </p>
         {% if ct.consolidation != 0 %}
-        <p class="result-text">Consolidation:<span class="percent">{{ ct.consolidation }}%</span> </p>
+        <div class="color-cube"></div><p class="result-text consolidation">Consolidation:<span class="percent">{{ ct.consolidation }}%</span> </p>
         {% endif %}
     </div>
     <p class="result-text">Общий процент поражения:<span class="percent">{{ct.damage}}%</span></p>
