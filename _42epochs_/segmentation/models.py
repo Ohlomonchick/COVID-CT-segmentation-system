@@ -10,6 +10,13 @@ class CT(models.Model):
     consolidation = models.IntegerField(verbose_name='Consolidation ', default=0, null=True)
     category = models.IntegerField(verbose_name='Consolidation ', default=0, null=True)
 
+    ground_glass_im = models.ImageField(upload_to="segments/%Y/", verbose_name="Сегментированное изображение",
+                                        null=True)
+    consolidation_im = models.ImageField(upload_to="segments/%Y/", verbose_name="Сегментированное изображение",
+                                        null=True)
+    lung_other_im = models.ImageField(upload_to="segments/%Y/", verbose_name="Сегментированное изображение",
+                                         null=True)
+
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
 
     def __str__(self):

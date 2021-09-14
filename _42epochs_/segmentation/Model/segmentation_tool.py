@@ -65,6 +65,22 @@ class Segmentation():
             title = 'consolidation'
         return percentage, title
 
+    def put_masks(self, orig_im, semantic_map, channels=[], colors=[]):
+
+        # len(channels) must equal len(colors)
+        # in channels: 0 - ground glass, 1 - consolidation, 2 - lung other, 3 - background
+
+        assert len(channels) == len(colors)
+
+        image = cv2.cvtColor(orig_im, cv2.COLOR_GRAY2BGR)
+
+        for i in range(len(channels)):
+            mask = np.uint8(semantic_map[:, :, channels[i]] * 255)
+            color = np.array(colors[i], dtype='uint8')
+            image = np.where(mask[..., None], color, image)
+
+        return image
+
     def predict_cat(self, gr_glass, consolidation):
         if (consolidation == 0 and gr_glass == 0):
             return 0
@@ -114,8 +130,35 @@ class Segmentation():
         category = self.predict_cat(percentage1, percentage2)
 
         # визуализация
-        out = self.draw_masks(self.image, semantic_map)
+        # out = self.draw_masks(self.image, semantic_map)
+        out = self.put_masks(self.image, semantic_map, [0, 2], [[255, 255, 0], [0, 0, 255]])
 
-        return (percentage1, title1), (percentage2, title2), out, category
+        return (percentage1, title1), (percentage2, title2), out, category, semantic_map, self.image
+
+
+def get_color_transp_ims(orig_im, semantic_map, channels=[], colors=[]):
+
+  assert len(channels) == len(colors)
+
+  images = []
+  for i in range(len(channels)):
+    result = cv2.cvtColor(orig_im, cv2.COLOR_BGR2BGRA)
+    binary = semantic_map[..., channels[i]]
+    color = colors[i]
+    result[:, :, 0] = binary * color[0]
+    result[:, :, 1] = binary * color[1]
+    result[:, :, 2] = binary * color[2]
+    result[:, :, 3] = binary * color[3]
+
+    # trans_mask = result[:, :, 3] == 0
+    # result[trans_mask] = [255, 255, 255, 255]
+    # tmp = cv2.cvtColor(result, cv2.COLOR_BGRA2BGR)
+    # V = cv2.cvtColor(tmp, cv2.COLOR_BGR2HSV)[..., 2]
+    # _, A = cv2.threshold(V, 100, 255, cv2.THRESH_BINARY_INV)
+    # result = np.dstack((tmp, A))
+
+    images.append(result)
+
+  return images
 
 

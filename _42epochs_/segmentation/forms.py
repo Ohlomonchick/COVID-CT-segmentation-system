@@ -54,3 +54,12 @@ class AddCTForm(forms.ModelForm):
         # cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
 
         return image
+
+
+class LayerSelectForm(forms.Form):
+    ground_glass = forms.BooleanField(label='Матовое стекло', required=False, widget=forms.CheckboxInput(
+        attrs={'checked': 'checked', 'class': 'ground_glass_checkbox'}))
+    consolidation = forms.BooleanField(label='Консолидация', required=False, widget=forms.CheckboxInput(
+        attrs={'checked': 'checked', 'class': 'consolidation_checkbox', 'onclick': ''}))
+    lung_other = forms.BooleanField(label='Остальная часть лёгкого', required=False, widget=forms.CheckboxInput(
+        attrs={'checked': 'checked', 'class': 'consolidation_checkbox'}))

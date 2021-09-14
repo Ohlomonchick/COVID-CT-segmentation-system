@@ -206,6 +206,19 @@ form {
 	background-color: red;
 	border: solid 1px black;
 }
+.ct-segmented {
+	position: relative;
+}
+.ct-segmented img {
+	width: 512px;
+	height: 512px;
+}
+.ct-segmented-sub {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
 
 /* end ResultPage */
 

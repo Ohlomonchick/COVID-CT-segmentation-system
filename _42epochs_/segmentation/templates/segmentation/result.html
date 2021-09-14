@@ -1,6 +1,8 @@
 {% extends 'segmentation/base.html' %}
+{% load static %}
 
 {% block content %}
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <h1 class="page_name">Результат</h1>
     <div class="results">
         <div style="background-color: yellow;" class="color-cube"></div><p class="result-text ground-glass">Ground Glass :<span class="percent">{{ ct.ground_glass }}%</span> </p>
@@ -19,8 +21,13 @@
         </div>
         <div class="res-image">
             <h2>Сегментированное изображение: </h2>
-            {% if ct.segmented_image %}
-            <img class="ct-segmented" src="{{ ct.segmented_image.url }}">
+            {% if ct.ct_image %}
+                <div class="ct-segmented">
+                    <img src="{{ ct.ct_image.url }}">
+                    <img id="ground_glass_im" class="ct-segmented-sub" src="{{ ct.ground_glass_im.url }}">
+                    <img id="consolidation_im" class="ct-segmented-sub" src="{{ ct.consolidation_im.url }}">
+                    <img id="lung_other_im" class="ct-segmented-sub" src="{{ ct.lung_other_im.url }}">
+                </div>
             {% endif %}
         </div>
     </div>
@@ -30,6 +37,19 @@
 {#    <p><img class="ct-mask" src="{{ ct.mask.url }}"></p>#}
 {#    {% endif %}#}
 
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+        <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+        <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+
+        <button class="segment" type="submit">Скачать изображение</button>
+    </form>
+
+{#    <a class="segment"  href="{{ct.segmented_image.url}}" download>Скачать изображение</a>#}
     <a class="segment"  href="{% url 'home' %}">На главную</a>
 
     <script type="text/javascript">
@@ -37,5 +57,6 @@
         $('.footer').css({"margin-top": "5vh"});
     });
     </script>
+    <script type="text/javascript" src="{% static 'segmentation/js/label_select.js' %}"></script>
 
 {% endblock %}
