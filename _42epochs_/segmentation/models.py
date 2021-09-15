@@ -18,6 +18,7 @@ class CT(models.Model):
                                          null=True)
 
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
+    semantic_map = models.BinaryField(verbose_name="Семантическая карта", null=True)
 
     def __str__(self):
         return f'#Процент поражения: {self.damage}'

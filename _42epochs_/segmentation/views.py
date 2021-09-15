@@ -14,6 +14,8 @@ from PIL import Image
 from django.conf import settings
 from django.http import HttpResponse, Http404, FileResponse
 import magic
+import pickle
+import base64
 
 
 PATH_TO_MODEL = 'segmentation/Model/Unet_efficientnetb0.pth'
@@ -90,7 +92,6 @@ class AddCT(CreateView):
         # new_images = []
         # for image in images:
 
-
         print(str(title1) + ' ' + str(percentage1) + ' % ')
         print(str(title2) + ' ' + str(percentage2) + ' % ')
         print('Predicted category is - CT-', str(category))
@@ -110,6 +111,11 @@ class AddCT(CreateView):
         ct.ground_glass_im = save_output_path_segments(out=images[0], name='ground_glass_image_', pk=ct.pk)
         ct.consolidation_im = save_output_path_segments(out=images[1], name='consolidation_image_', pk=ct.pk)
         ct.lung_other_im = save_output_path_segments(out=images[2], name='lung_other_image_', pk=ct.pk)
+
+        np_bytes = pickle.dumps(semantic_map)
+        np_base64 = base64.b64encode(np_bytes)
+        ct.semantic_map = np_base64
+
         ct.save()
 
         return redirect('result/' + str(ct.id))
@@ -139,23 +145,26 @@ class ShowSegmented(DetailView, FormView):
         ct = CT.objects.get(pk=self.kwargs['ct_pk'])
         img = cv2.imread(ct.ct_image.path)
         img = cv2.resize(img, (512, 512))
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
-        added_im = img
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        channels = []
 
         if form.cleaned_data['ground_glass']:
-            ground_glass_im = cv2.imread(ct.ground_glass_im.path)
-            consolidation_im = cv2.cvtColor(ground_glass_im, cv2.COLOR_BGR2BGRA)
-            added_im = cv2.addWeighted(added_im, 1, consolidation_im, 1, 0)
+            channels.append(0)
 
         if form.cleaned_data['consolidation']:
-            consolidation_im = cv2.imread(ct.consolidation_im.path)
-            consolidation_im = cv2.cvtColor(consolidation_im, cv2.COLOR_BGR2BGRA)
-            added_im = cv2.addWeighted(img, 1, consolidation_im, 1, 0)
+            channels.append(1)
 
         if form.cleaned_data['lung_other']:
-            lung_other_im = cv2.imread(ct.lung_other_im.path)
-            lung_other_im = cv2.cvtColor(lung_other_im, cv2.COLOR_BGR2BGRA)
-            added_im = cv2.addWeighted(added_im, 1, lung_other_im, 1, 0)
+            channels.append(2)
+
+        colors = [[0, 255, 255], [0, 0, 255], [255, 0, 0]]
+        colors = [colors[channel] for channel in channels]
+        print(channels, colors)
+
+        np_bytes = base64.b64decode(ct.semantic_map)
+        semantic_map = pickle.loads(np_bytes)
+
+        added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
 
         cv2.imwrite(ct.segmented_image.path, added_im)
 

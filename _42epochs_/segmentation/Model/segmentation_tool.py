@@ -65,7 +65,8 @@ class Segmentation():
             title = 'consolidation'
         return percentage, title
 
-    def put_masks(self, orig_im, semantic_map, channels=[], colors=[]):
+    @staticmethod
+    def put_masks(orig_im, semantic_map, channels=[], colors=[]):
 
         # len(channels) must equal len(colors)
         # in channels: 0 - ground glass, 1 - consolidation, 2 - lung other, 3 - background
