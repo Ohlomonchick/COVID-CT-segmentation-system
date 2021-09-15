@@ -8,3 +8,4 @@ class SegmentationConfig(AppConfig):
 
 class FirstConfig(AppConfig):
     name = 'first'
+

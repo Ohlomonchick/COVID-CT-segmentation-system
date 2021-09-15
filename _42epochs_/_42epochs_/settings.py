@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     # 'livereload',
     'django.contrib.staticfiles',
-    'segmentation.apps.SegmentationConfig'
+    'segmentation.apps.SegmentationConfig',
+    # 'segmentation.apps.SegmentationConfigcolorfield'
+
 ]
 
 MIDDLEWARE = [

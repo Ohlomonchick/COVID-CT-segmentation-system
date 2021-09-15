@@ -36,7 +36,7 @@ def save_output_path(out, name: str, pk: int):
 
 
 def save_output_path_segments(out, name: str, pk: int):
-    im = Image.fromarray(np.uint8(out)).convert('RGBA')
+    # im = Image.fromarray(np.uint8(out)).convert('RGBA')
     global_save_path = os.path.join(settings.MEDIA_ROOT, 'images')
     save_path = os.path.join(global_save_path, name + str(pk) + '.png')
 

@@ -143,7 +143,7 @@ def get_color_transp_ims(orig_im, semantic_map, channels=[], colors=[]):
 
   images = []
   for i in range(len(channels)):
-    result = cv2.cvtColor(orig_im, cv2.COLOR_BGR2BGRA)
+    result = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGBA)
     binary = semantic_map[..., channels[i]]
     color = colors[i]
     result[:, :, 0] = binary * color[0]

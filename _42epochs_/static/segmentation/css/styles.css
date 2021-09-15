@@ -1,0 +1,358 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
+
+@font-face {
+    font-family: 'Roboto';
+    /*src: url('./fonts/Bahnschrift.ttf') format('truetype'); !* Chrome < 4, Legacy iOS *!*/
+}
+
+
+body {
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	font-size: 2vh;
+	background: #fff;
+	color: #000;
+}
+
+
+a{
+	outline: none !important;
+}
+
+h1{
+	text-transform: uppercase;
+}
+
+p a{
+	color: #3498DB;
+}
+
+.main{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+/* MainPage */
+
+.profile-link {
+	margin-top: 1vh;
+	position: static;
+	border-radius: 0.8vh;
+    box-shadow: 0 0 2px black;
+    font-size: 110%;
+    padding-top: 0.68vh;
+    text-align: center;
+    vertical-align: bottom;
+    margin-right: 1vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
+    color: white;
+    height: 4vh;
+    max-width: 22vh;
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    text-transform: uppercase;
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.profile-link:hover{
+	display: block;
+	background-color: white;
+	text-shadow: 0 0 1px black;
+	border-color: white;
+	color: black;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-label{
+	display: block;
+	width: 190px;
+	height: 40px;
+	line-height: 40px;
+}
+
+.segment{width: 190px;
+    border: 1px solid #000;
+    border-radius: 30px;
+    color: #fff;
+    outline: none;
+    background: #000;
+    transition: background .3s,border .3s,color .3s;
+    text-align: center;
+    font-weight: 700;
+    cursor: pointer;
+    height: 40px;
+    line-height: 38px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    margin-bottom: 40px;
+	text-decoration: none;
+}
+
+#file-name{font-size: 14px;padding-bottom: 20px;}
+
+.file-upload input[type="file"]{
+	display: none;
+}
+
+.errorlist{
+	    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.file-upload {
+	width: 200px;
+	border: 1px solid #1bbc9b;
+	color: #fff;
+	outline: none;
+	background: #1bbc9b;
+	transition: background .3s,border .3s,color .3s;
+	text-align: center;
+	font-weight: 400;
+	cursor: pointer;
+	height: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	letter-spacing: .02em;
+	margin-bottom: 20px;
+	font: 700 14px 'Comfortaa', sans-serif;
+}
+
+.file-upload:hover {
+	background: #13a688;
+	border: 1px solid #13a688;
+}
+
+#preview{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-img{
+	max-width: 256px;
+	max-height: 256px;
+	margin-bottom: 20px;
+}
+
+.page_name{
+	padding-bottom: 40px;
+	color: #13a688;
+	font-weight: 400;
+	font-size: 18px;
+	padding-top: 40px;
+}
+/* end MainPage */
+
+
+/* ResultPage */
+.results{display: flex;width: 340px;justify-content: space-between;}
+
+.result-text{font-family: 'Comfortaa';font-weight: 500;font-size: 14px;margin-bottom: 20px;}
+
+.ground-glass::after {
+	color: gray;
+	content: "Матовое стекло";
+	font-size: 0.9vh;
+}
+
+.consolidation::after {
+	color: gray;
+	content: "Консолидация";
+	font-size: 0.9vh;
+}
+
+.percent{color: #13a688;font-weight: 700;font-family: 'Roboto';padding-left: 5px;}
+
+.result-images{display: flex;padding-top: 10px;margin-bottom: 40px;}
+
+.res-image h2{
+	color: #13a688;
+	text-transform: uppercase;
+	font-weight: 600;
+	line-height: 2.5vh;
+	margin-bottom: 13px;
+	font-size: 12px;
+	letter-spacing: 0.3px;
+}
+
+.footer_min{
+	margin-top: 5vh;
+}
+.res-image_first{
+	margin-right: 83px;
+}
+
+.result-image {
+	max-width: 256px;
+}
+
+.color-cube {
+	display: inline-block;
+	height: 14px;
+	width: 20px;
+	margin-right: 1vh;
+	background-color: red;
+	border: solid 1px black;
+}
+.ct-segmented {
+	position: relative;
+}
+.ct-segmented img {
+	width: 512px;
+	height: 512px;
+}
+.ct-segmented-sub {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1000;
+}
+
+/* end ResultPage */
+
+
+/*Footer*/
+
+.footer{
+	border-top: 1px solid gray;
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 35vh;
+	background: #fff;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20vh;
+}
+
+.footer-content{
+	display: flex;
+	position: relative;
+	width: 100%;
+	height: 30vh;
+	background: #fff;
+	justify-content: center;
+	align-items: center;
+}
+
+.footer-info {
+	margin-top: 4.5vh;
+	height: 100%;
+	color: #000;
+	width: 40vh;
+}
+
+.footer-info p {
+	color: #13a688;
+	text-transform: uppercase;
+	font-weight: 600;
+	line-height: 2.5vh;
+}
+
+.person {
+	text-decoration: none;
+	margin-top: 1vh;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	text-transform: uppercase;
+	font-weight: normal;
+}
+
+.email {
+	color: #000;
+	display: block;
+	width: 100%;
+}
+
+.email p {
+	color: #13a688;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 2.5vh;
+}
+
+.email a {
+	margin-left: 0.4vh;
+	margin-top: 1vh;
+	margin-right: 1vh;
+}
+
+.person p {
+	margin-left: 1vh;
+	color: #000;
+	text-transform: capitalize;
+	font-family: 'Comfortaa';
+	font-size: 12.5px;
+	font-weight: 600;
+}
+
+.icon {
+	display: none;
+}
+
+.vk {
+	left: 10%;
+	width: 32px;
+	height: 27px;
+	background-image: url("../images/footer/VK_Monochrome_Logo_t.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+	filter: invert(1);
+}
+
+.github {
+	background-image: url("../images/footer/github_PNG40.png");
+	filter: none;
+	height: 32px;
+}
+
+.disclaimer {
+	padding-left: 5.5vh;
+	bottom: 0%;
+	display: flex;
+	position: absolute;
+	color: #8d8f97;
+	font-size: 1.7vh;
+	border-top: 1px solid gray;
+	height: 6vh;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+}
+
+/*end Footer*/
+
+
+/* scrollbar */
+
+::-webkit-scrollbar {
+    width: 5px;
+    padding-top: 40px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #c1c1c1;
+    min-height: 100px;
+}
+
+::-webkit-scrollbar-track {
+    border-width: 0;
+    background: #ffffff;
+    background-clip: content-box;
+}
+
+/* endscrollbar */
