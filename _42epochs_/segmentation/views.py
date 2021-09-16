@@ -45,6 +45,15 @@ def save_output_path_segments(out, name: str, pk: int):
     return save_path
 
 
+def hex2bgr(h: str):
+    h = h.lstrip('#')
+    rgb = list(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+    bgr = rgb[::-1]
+
+    return bgr
+
+
 class AddCT(CreateView):
     form_class = AddCTForm
     template_name = 'segmentation/addpage.html'
@@ -157,7 +166,9 @@ class ShowSegmented(DetailView, FormView):
         if form.cleaned_data['lung_other']:
             channels.append(2)
 
-        colors = [[0, 255, 255], [0, 0, 255], [255, 0, 0]]
+        colors = [hex2bgr(form.cleaned_data['ground_glass_color']),
+                  hex2bgr(form.cleaned_data['consolidation_color']),
+                  hex2bgr(form.cleaned_data['lung_other_color'])]
         colors = [colors[channel] for channel in channels]
         print(channels, colors)
 

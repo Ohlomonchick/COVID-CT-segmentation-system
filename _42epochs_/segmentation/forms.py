@@ -63,7 +63,7 @@ class LayerSelectForm(forms.Form):
         attrs={'type': 'color', 'class': 'color-pick'}))
 
     consolidation = forms.BooleanField(label='Консолидация', required=False, widget=forms.CheckboxInput(
-        attrs={'checked': 'checked', 'class': 'consolidation_checkbox', 'onclick': ''}))
+        attrs={'checked': 'checked', 'class': 'consolidation_checkbox'}))
     consolidation_color = forms.CharField(max_length=7, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}))
 
