@@ -58,16 +58,16 @@ class AddCTForm(forms.ModelForm):
 
 class LayerSelectForm(forms.Form):
     ground_glass = forms.BooleanField(label='Матовое стекло', required=False, widget=forms.CheckboxInput(
-        attrs={'checked': 'checked', 'class': 'ground_glass_checkbox'}))
-    ground_glass_color = forms.CharField(max_length=7, widget=forms.TextInput(
-        attrs={'type': 'color', 'class': 'color-pick'}))
+        attrs={'checked': 'checked', 'class': 'ground_glass_checkbox layer_checkbox'}))
+    ground_glass_color = forms.CharField(label='Цвет', max_length=7, widget=forms.TextInput(
+        attrs={'type': 'color', 'class': 'color-pick'}), initial='#FFFF00')
 
     consolidation = forms.BooleanField(label='Консолидация', required=False, widget=forms.CheckboxInput(
-        attrs={'checked': 'checked', 'class': 'consolidation_checkbox'}))
-    consolidation_color = forms.CharField(max_length=7, widget=forms.TextInput(
-        attrs={'type': 'color', 'class': 'color-pick'}))
+        attrs={'checked': 'checked', 'class': 'consolidation_checkbox layer_checkbox'}))
+    consolidation_color = forms.CharField(label='Цвет', max_length=7, widget=forms.TextInput(
+        attrs={'type': 'color', 'class': 'color-pick'}), initial='#FF0000')
 
     lung_other = forms.BooleanField(label='Остальная часть лёгкого', required=False, widget=forms.CheckboxInput(
-        attrs={'checked': 'checked', 'class': 'consolidation_checkbox'}))
-    lung_other_color = forms.CharField(max_length=7, widget=forms.TextInput(
-        attrs={'type': 'color', 'class': 'color-pick'}))
+        attrs={'class': 'consolidation_checkbox layer_checkbox'}))
+    lung_other_color = forms.CharField(label='Цвет', max_length=7, widget=forms.TextInput(
+        attrs={'type': 'color', 'class': 'color-pick'}), initial='#0000FF')

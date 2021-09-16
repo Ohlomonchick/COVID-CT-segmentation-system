@@ -96,7 +96,7 @@ class AddCT(CreateView):
         x = Segmentation(img, path_to_model=PATH_TO_MODEL)
         (percentage1, title1), (percentage2, title2), out, category, semantic_map, orig_im = x.main()
 
-        images = get_color_transp_ims(orig_im, semantic_map, [0, 1, 2], [[0, 255, 255, 255], [0, 0, 255, 255], [255, 0, 0, 255]])
+        images = get_color_transp_ims(orig_im, semantic_map, [0, 1, 2], [[0, 0, 0, 255], [0, 0, 0, 255], [0, 0, 0, 255]])
 
         # new_images = []
         # for image in images:

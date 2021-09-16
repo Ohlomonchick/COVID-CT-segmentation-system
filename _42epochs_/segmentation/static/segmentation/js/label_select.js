@@ -9,9 +9,7 @@ $(document).ready(function(){
       $('#lung_other_im').attr('style', 'display: inline-block;')
   }
 });
-});
 
-$(document).ready(function(){
  $('#id_consolidation').change(function() {
 
   if(this.checked !== true){
@@ -22,9 +20,7 @@ $(document).ready(function(){
       $('#consolidation_im').attr('style', 'display: inline-block;')
   }
 });
-});
 
-$(document).ready(function(){
  $('#id_ground_glass').change(function() {
 
   if(this.checked !== true){

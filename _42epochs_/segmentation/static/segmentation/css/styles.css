@@ -220,6 +220,24 @@ form {
 	z-index: 1000;
 }
 
+#ground_glass_im {
+	filter: invert(97%) sepia(83%) saturate(4157%) hue-rotate(358deg) brightness(103%) contrast(102%);
+}
+
+#consolidation_im {
+	filter: invert(37%) sepia(97%) saturate(7374%) hue-rotate(354deg) brightness(100%) contrast(125%);
+}
+
+#lung_other_im {
+	display: none;
+	filter: invert(8%) sepia(100%) saturate(7467%) hue-rotate(247deg) brightness(96%) contrast(144%);
+}
+
+.color-pick, .layer_checkbox {
+	position: relative;
+	bottom: 2vh;
+	left: 18vh;
+}
 /* end ResultPage */
 
 
