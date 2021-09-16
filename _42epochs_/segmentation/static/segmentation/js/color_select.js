@@ -296,7 +296,8 @@ function hexToRgb(hex) {
 
 $(document).ready(() => {
   $('#id_consolidation_color').change(function() {
-    const rgb = hexToRgb($('input#id_consolidation_color').val());
+    const color_value = $('input#id_consolidation_color').val();
+    const rgb = hexToRgb(color_value);
     if (rgb.length !== 3) {
       alert('Invalid format!');
       return;
@@ -306,11 +307,13 @@ $(document).ready(() => {
     const solver = new Solver(color);
     const result = solver.solve();
 
+    $('#cons-cube').attr('style', 'background-color: ' + color_value);
     $('#consolidation_im').attr('style', result.filter);
   });
 
   $('#id_ground_glass_color').change(function() {
-    const rgb = hexToRgb($('input#id_ground_glass_color').val());
+    const color_value = $('input#id_ground_glass_color').val();
+    const rgb = hexToRgb(color_value);
     if (rgb.length !== 3) {
       alert('Invalid format!');
       return;
@@ -320,6 +323,7 @@ $(document).ready(() => {
     const solver = new Solver(color);
     const result = solver.solve();
 
+    $('#gr-cube').attr('style', 'background-color: ' + color_value);
     $('#ground_glass_im').attr('style', result.filter);
   });
 
