@@ -114,5 +114,3 @@ dmypy.json
 .pyre/
 
 _42epochs_/media/images
-
-pypotrace/
