@@ -13,11 +13,11 @@ $(document).ready(function(){
  $('#id_consolidation').change(function() {
 
   if(this.checked !== true){
-        $('#consolidation_im').attr('style', 'display: none;')
+        $('#consolidation_im').css('display', 'none')
         console.log("hHhjhhhhfff")
      }
   else {
-      $('#consolidation_im').attr('style', 'display: inline-block;')
+      $('#consolidation_im').css('display', 'inline-block;')
   }
 });
 
