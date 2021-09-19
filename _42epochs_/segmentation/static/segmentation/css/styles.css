@@ -66,9 +66,9 @@ p a {
 
 form {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     width: 315px;
+    align-items: center;
+    flex-direction: column;
 }
 .form_color{
     justify-content: initial;
@@ -76,16 +76,19 @@ form {
 
 
 .form-label {
+    width: 200px;
+    height: 40px;
     font-weight: 700;
     font-family: 'Comfortaa';
     font-size: 14px;
-    line-height: 14px;
+    line-height: 40px;
 }
 
 .form-label_seg{
     width: 180px;
     font-size: 14px;
     margin-right: 20px;
+    line-height: 14px;
 }
 
 .segment {
