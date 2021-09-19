@@ -5,9 +5,11 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <h1 class="page_name">Результат</h1>
     <div class="results">
-        <div id="gr-cube" style="background-color: yellow;" class="color-cube"></div><p class="result-text ground-glass">Ground Glass :<span class="percent">{{ ct.ground_glass }}%</span> </p>
+        {% if ct.ground_glass != 0 %}
+            <div id="gr-cube" style="background-color: yellow;" class="color-cube"></div><p class="result-text ground-glass">Ground Glass :<span class="percent">{{ ct.ground_glass }}%</span> </p>
+        {% endif %}
         {% if ct.consolidation != 0 %}
-        <div id="cons-cube" class="color-cube"></div><p class="result-text consolidation">Consolidation:<span class="percent">{{ ct.consolidation }}%</span> </p>
+            <div id="cons-cube" class="color-cube"></div><p class="result-text consolidation">Consolidation:<span class="percent">{{ ct.consolidation }}%</span> </p>
         {% endif %}
     </div>
     <p class="result-text">Общий процент поражения:<span class="percent">{{ct.damage}}%</span></p>
@@ -24,8 +26,12 @@
             {% if ct.ct_image %}
                 <div class="ct-segmented">
                     <img src="{{ ct.ct_image.url }}">
-                    <img id="ground_glass_im" class="ct-segmented-sub" src="{{ ct.ground_glass_im.url }}">
-                    <img id="consolidation_im" class="ct-segmented-sub" src="{{ ct.consolidation_im.url }}">
+                    {% if ct.ground_glass != 0 %}
+                        <img id="ground_glass_im" class="ct-segmented-sub" src="{{ ct.ground_glass_im.url }}">
+                    {% endif %}
+                    {% if ct.consolidation != 0 %}
+                        <img id="consolidation_im" class="ct-segmented-sub" src="{{ ct.consolidation_im.url }}">
+                    {% endif %}
                     <img id="lung_other_im" class="ct-segmented-sub" src="{{ ct.lung_other_im.url }}">
                 </div>
             {% endif %}

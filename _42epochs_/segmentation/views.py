@@ -145,7 +145,13 @@ class ShowSegmented(DetailView, FormView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Результат'
-        context['download_url'] = 'download/' + str(self.model.pk)
+        if context['ct'].consolidation == 0:
+            context['form'].fields.pop('consolidation_color')
+            context['form'].fields.pop('consolidation')
+        if context['ct'].ground_glass == 0:
+            context['form'].fields.pop('ground_glass_color')
+            context['form'].fields.pop('ground_glass')
+        print(context['form'].fields)
         return context
 
     def form_valid(self, form):

@@ -68,6 +68,6 @@ class LayerSelectForm(forms.Form):
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#FF0000')
 
     lung_other = forms.BooleanField(label='Остальная часть лёгкого', required=False, widget=forms.CheckboxInput(
-        attrs={'class': 'consolidation_checkbox layer_checkbox'}))
+        attrs={'class': 'lung_other_checkbox layer_checkbox'}))
     lung_other_color = forms.CharField(label='', max_length=7, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#0000FF')
