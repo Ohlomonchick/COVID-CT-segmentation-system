@@ -1,9 +1,11 @@
 {% extends 'segmentation/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <h1 class="page_name">{{title}}</h1>
 
-<form  method="post" enctype="multipart/form-data">
+<form id="load_form" method="post" enctype="multipart/form-data">
 {#action="{% url 'add_page' %}"#}
     {% csrf_token %}
 
@@ -20,9 +22,9 @@
         <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
 
-    <button class="segment" type="submit">Сегментировать</button>
+    <button id="upload-to" class="segment" type="submit">Сегментировать</button>
 </form>
-
+<script type="text/javascript" src="{% static 'segmentation/js/progress_bar.js' %}"></script>
 <script type="text/javascript">
 $('.uploaded-file').on('change', function () {
     getFileParam();

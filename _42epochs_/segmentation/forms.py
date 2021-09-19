@@ -20,8 +20,6 @@ class AddCTForm(forms.ModelForm):
         model = CT
         fields = ['ct_image']
         widgets = {
-
-            'title': forms.TextInput(attrs={'class': 'uploaded-file'}),
             # 'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
             'ct_image': forms.FileInput(attrs={'class': 'uploaded-file'})
         }
@@ -54,6 +52,12 @@ class AddCTForm(forms.ModelForm):
         # cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
 
         return image
+
+
+# class ArchiveForm(forms.ModelForm):
+#   class Meta:
+#     model = Archive
+#     fields = ['file_obj']
 
 
 class LayerSelectForm(forms.Form):

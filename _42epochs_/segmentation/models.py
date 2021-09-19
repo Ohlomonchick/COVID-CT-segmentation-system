@@ -27,3 +27,7 @@ class CT(models.Model):
         verbose_name = 'Томография'
         verbose_name_plural = 'Томографии'
         ordering = ['id']
+
+
+# class Archive(models.Model):
+#     archive_obj = models.FileField(upload_to='media/archives/')
