@@ -308,7 +308,15 @@ $(document).ready(() => {
     const result = solver.solve();
 
     $('#cons-cube').attr('style', 'background-color: ' + color_value);
-    $('#consolidation_im').attr('style', result.filter);
+    var obj = $('#consolidation_im');
+    var st = $('#consolidation_im').css("display").slice(0,-1);
+    obj.attr('style', result.filter);
+    if ( st === "bloc") {
+      $('#consolidation_im').css('display', 'inline-block');
+    }
+    else {
+      $('#consolidation_im').css('display', 'none');
+    }
   });
 
   $('#id_ground_glass_color').change(function() {
@@ -324,7 +332,15 @@ $(document).ready(() => {
     const result = solver.solve();
 
     $('#gr-cube').attr('style', 'background-color: ' + color_value);
-    $('#ground_glass_im').attr('style', result.filter);
+    var obj = $('#ground_glass_im');
+    var st = $('#ground_glass_im').css("display").slice(0,-1);
+    obj.attr('style', result.filter);
+    if ( st === "bloc") {
+      $('#ground_glass_im').css('display', 'inline-block');
+    }
+    else {
+      $('#ground_glass_im').css('display', 'none');
+    }
   });
 
   $('#id_lung_other_color').change(function() {
@@ -338,6 +354,15 @@ $(document).ready(() => {
     const solver = new Solver(color);
     const result = solver.solve();
 
-    $('#lung_other_im').attr('style', result.filter);
+    var obj = $('#lung_other_im');
+    var st = $('#lung_other_im').css("display").slice(0,-1);
+    obj.attr('style', result.filter);
+    if ( st === "bloc") {
+      $('#lung_other_im').css('display', 'inline-block');
+    }
+    else {
+      $('#lung_other_im').css('display', 'none');
+    }
+
   });
 });
