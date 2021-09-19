@@ -308,7 +308,7 @@ $(document).ready(() => {
     const result = solver.solve();
 
     $('#cons-cube').attr('style', 'background-color: ' + color_value);
-    $('#consolidation_im').attr('style', result.filter);
+    $('#consolidation_im').attr('style', result.filter).css('display', 'inline-block');
   });
 
   $('#id_ground_glass_color').change(function() {
@@ -324,7 +324,7 @@ $(document).ready(() => {
     const result = solver.solve();
 
     $('#gr-cube').attr('style', 'background-color: ' + color_value);
-    $('#ground_glass_im').attr('style', result.filter);
+    $('#ground_glass_im').attr('style', result.filter).css('display', 'inline-block');
   });
 
   $('#id_lung_other_color').change(function() {
@@ -338,6 +338,6 @@ $(document).ready(() => {
     const solver = new Solver(color);
     const result = solver.solve();
 
-    $('#lung_other_im').attr('style', result.filter);
+    $('#lung_other_im').attr('style', result.filter).css('display', 'inline-block');
   });
 });
