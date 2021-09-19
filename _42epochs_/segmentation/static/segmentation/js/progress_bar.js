@@ -1,39 +1,46 @@
-(function($){
-$(function(){
-    $(document).ready(function() {
-        $("#upload-to").submit(function( event ) {
-          event.preventDefault();
+var counter = 0;
 
-          var post_data = new FormData($("form")[0]);
+$(document).ready(function() {
+    $( "#load_form" ).submit(function( event ) {
+        if (counter < 1) {
+      event.preventDefault();
+      counter = counter + 1;
 
-          $.ajax({
-              xhr: function() {
-                var xhr = new window.XMLHttpRequest();
-                var new_div = document.createElement('div');
+      var post_data = new FormData($("form")[0]);
 
-                new_div.innerHTML = '<progress id="progressBar" value="0" max="100" style="width:300px;"></progress><h3 id="status"></h3><p id="loaded_n_total"></p>';
-                document.getElementsByClassName('segment')[0].appendChild(new_div)
+      $.ajax({
+          xhr: function() {
+            var xhr = new window.XMLHttpRequest();
+            var new_div = document.createElement('div');
 
-                xhr.upload.addEventListener("progress", progressHandler, false);
-                xhr.addEventListener("load", completeHandler, false);
-                xhr.addEventListener("error", errorHandler, false);
-                xhr.addEventListener("abort", abortHandler, false);
+            new_div.innerHTML = '<progress id="progressBar" value="0" max="100" style="width:300px;"></progress><h3 id="status"></h3><p id="loaded_n_total"></p>';
+            document.getElementsByClassName('archive-form')[0].appendChild(new_div)
 
-                return xhr;
-              },
-                url: window.location.href,// to allow add and edit
-                type: "POST",
-                data: post_data,
-                processData: false,
-                contentType: false,
-                success: function(result) {
-                    window.location.replace("/admin/yourapp/yoursupermodel/");
-              }
-            });
+            xhr.upload.addEventListener("progress", progressHandler, false);
+            xhr.addEventListener("load", completeHandler, false);
+            xhr.addEventListener("error", errorHandler, false);
+            xhr.addEventListener("abort", abortHandler, false);
+
+            return xhr;
+          },
+            url: window.location.href,// to allow add and edit
+            type: "POST",
+            data: post_data,
+            processData: false,
+            contentType: false,
+            success: function() {
+                  $(".main").css('display', 'none');
+                  $(".footer").css('display', 'none');
+                  $( "#load_form" ).submit();
+
+              // event.initEvent();
+              // xhr.close();
+          }
         });
+      }
     });
 });
-})(django.jQuery);
+
 
 function _(el) {
   return document.getElementById(el);

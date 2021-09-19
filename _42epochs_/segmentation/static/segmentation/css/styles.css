@@ -157,6 +157,24 @@ form {
     border: 1px solid #13a688;
 }
 
+.file-upload-archive {
+    width: 200px;
+    border: 1px solid #1bbc9b;
+    color: #fff;
+    background: #1bbc9b;
+    transition: background 0.3s, border 0.3s, color 0.3s;
+    text-align: center;
+    font-weight: 400;
+    cursor: pointer;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+    font: 700 14px "Comfortaa", sans-serif;
+}
+
 #preview {
     display: flex;
     justify-content: center;

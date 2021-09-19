@@ -1,12 +1,10 @@
 import os
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView
 from segmentation.models import *
-from segmentation.forms import AddCTForm, LayerSelectForm
+from segmentation.forms import AddCTForm, LayerSelectForm, ArchiveForm
 import cv2
 from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_ims
 import numpy as np
@@ -133,6 +131,23 @@ class AddCT(CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Загрузка КТ'
         return context
+
+
+class AddArchive(CreateView):
+    form_class = ArchiveForm
+    template_name = 'segmentation/addarchive.html'
+    raise_exception = True
+    success_url = 'home'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Загрузка Архивом'
+        return context
+
+    def form_valid(self, form):
+        archive = form.save()
+        print(archive.archive_obj)
+        return redirect('home')
 
 
 class ShowSegmented(DetailView, FormView):

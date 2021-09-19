@@ -5,7 +5,7 @@
 {% block content %}
 <h1 class="page_name">{{title}}</h1>
 
-<form id="load_form" method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data">
 {#action="{% url 'add_page' %}"#}
     {% csrf_token %}
 
@@ -24,7 +24,7 @@
 
     <button id="upload-to" class="segment" type="submit">Сегментировать</button>
 </form>
-<script type="text/javascript" src="{% static 'segmentation/js/progress_bar.js' %}"></script>
+    <a class="segment" href="{% url 'load_archive' %}">Загрузить Архивом</a>
 <script type="text/javascript">
 $('.uploaded-file').on('change', function () {
     getFileParam();

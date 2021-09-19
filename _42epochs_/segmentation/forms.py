@@ -54,10 +54,15 @@ class AddCTForm(forms.ModelForm):
         return image
 
 
-# class ArchiveForm(forms.ModelForm):
-#   class Meta:
-#     model = Archive
-#     fields = ['file_obj']
+class ArchiveForm(forms.ModelForm):
+  class Meta:
+    model = Archive
+    fields = ['archive_obj']
+
+    widgets = {
+        # 'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
+        'archive_obj': forms.FileInput(attrs={'class': 'uploaded-file'})
+    }
 
 
 class LayerSelectForm(forms.Form):

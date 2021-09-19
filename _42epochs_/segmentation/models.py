@@ -29,5 +29,10 @@ class CT(models.Model):
         ordering = ['id']
 
 
-# class Archive(models.Model):
-#     archive_obj = models.FileField(upload_to='media/archives/')
+class Archive(models.Model):
+    archive_obj = models.FileField(upload_to='archives', verbose_name="Выберите файл", null=True)
+
+    class Meta:
+        verbose_name = 'Пакет томографий'
+        verbose_name_plural = 'Томографии'
+        ordering = ['id']
