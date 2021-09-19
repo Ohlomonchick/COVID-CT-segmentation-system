@@ -36,10 +36,12 @@
                     {% for f in form %}
                     <div class="color-choice">
                         {% if f.label == "" %}
+                            {{ f }}
                             <label class="form-label form-label_color" for="{{ f.id_for_label }}">{{ f.label }}
-                            </label>{{ f }}
+                            </label>
                         {% else %}
-                           <label class="form-label form-label_seg" for="{{ f.id_for_label }}">{{ f.label }} </label>{{ f }}
+                            {{ f }}
+                           <label class="form-label form-label_seg" for="{{ f.id_for_label }}">{{ f.label }} </label>
                         {% endif %}
                     </div>
                     <div class="form-error">{{ f.errors }}</div>
