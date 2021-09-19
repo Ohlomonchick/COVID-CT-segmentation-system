@@ -10,6 +10,38 @@ from django.core.files.storage import default_storage
 
 from .models import *
 
+import patoolib
+import shutil
+
+
+def image_check(image):
+    # path = image.temporary_file_path()
+    if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg' or image[-4:] == 'jpeg'):
+        raise ValidationError('Доступна обработка только .png и .jpg изображений')
+
+    if type(image) != str:
+        path = os.path.join(settings.MEDIA_ROOT, 'tmp')
+        path = os.path.join(path, 'temporary.png')
+        if os.path.isfile(path):
+            os.remove(path)
+
+        tmp_file = default_storage.save('tmp/temporary.png', ContentFile(image.read()))
+        path = os.path.join(settings.MEDIA_ROOT, tmp_file)
+
+        print(path)
+
+        pic = cv2.imread(path)
+    else:
+        pic = cv2.imread(image)
+
+    if pic.shape[0] < 256:
+        raise ValidationError('Необходимо изображение размером 256x256 и больше')
+    # if pic.shape[0] != pic.shape[1]:
+    a = max(pic.shape[0:2])
+    b = min(pic.shape[0:2])
+    if b * 1.1 < a:
+        raise ValidationError('Необходимо изображение с соотношением сторон 1 к 1')
+
 
 class AddCTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -26,27 +58,7 @@ class AddCTForm(forms.ModelForm):
 
     def clean_ct_image(self):
         image = self.files['ct_image']
-        path = os.path.join(settings.MEDIA_ROOT, 'tmp')
-        path = os.path.join(path, 'temporary.png')
-        if os.path.exists(path):
-            os.remove(path)
-        # path = image.temporary_file_path()
-        if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg' or str(image)[-4:] == 'jpeg'):
-            raise ValidationError('Доступна обработка только .png и .jpg изображений')
-
-        tmp_file = default_storage.save('tmp/temporary.png', ContentFile(image.read()))
-        path = os.path.join(settings.MEDIA_ROOT, tmp_file)
-
-        print(path)
-
-        pic = cv2.imread(path)
-        if pic.shape[0] < 256:
-            raise ValidationError('Нужно изображение размером 256x256 и больше')
-        # if pic.shape[0] != pic.shape[1]:
-        a = max(pic.shape[0:2])
-        b = min(pic.shape[0:2])
-        if b * 1.1 < a:
-            raise ValidationError('Нужно изображение с соотношением сторон 1 к 1')
+        image_check(image=image)
         # os.remove(path)
 
         # cv2.imwrite('../media/lungs/' + str(image)[:-4] + '.png', pic)
@@ -55,14 +67,42 @@ class AddCTForm(forms.ModelForm):
 
 
 class ArchiveForm(forms.ModelForm):
-  class Meta:
-    model = Archive
-    fields = ['archive_obj']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['archive_obj'].empty_label = "Архив не загружен"
 
-    widgets = {
-        # 'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
-        'archive_obj': forms.FileInput(attrs={'class': 'uploaded-file'})
-    }
+    class Meta:
+        model = Archive
+        fields = ['archive_obj']
+
+        widgets = {
+            # 'content': forms.Textarea(attrs={'cols': 60, 'rows': 10}),
+            'archive_obj': forms.FileInput(attrs={'class': 'uploaded-file'})
+        }
+
+    def clean_archive_obj(self):
+        archive = self.files['archive_obj']
+        arch_path = os.path.join(settings.MEDIA_ROOT, 'archives')
+        arch_path = os.path.join(arch_path, str(archive))
+        arch_path = os.path.normpath(arch_path)
+
+        if not (str(archive)[-3:] == 'zip' or str(archive)[-3:] == 'rar' or str(archive)[-4:] == 'jpeg'):
+            # os.remove(arch_path)
+            raise ValidationError('Доступна обработка только .zip и .rar файлов')
+
+        unzip_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp_arch'))
+        tmp_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp'))
+        default_storage.save(os.path.join(tmp_path, str(archive)), ContentFile(archive.read()))
+
+        if os.path.isdir(unzip_path):
+            shutil.rmtree(unzip_path)
+        os.mkdir(unzip_path)
+        patoolib.extract_archive(os.path.join(tmp_path, str(archive)), outdir=unzip_path)
+        for file in os.listdir(unzip_path):
+            file_path = os.path.normpath(os.path.join(unzip_path, file))
+            image_check(file_path)
+
+        # return archive
 
 
 class LayerSelectForm(forms.Form):
