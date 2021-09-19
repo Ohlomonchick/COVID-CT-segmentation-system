@@ -13,7 +13,7 @@
 
     {% for f in form %}
         <div class="file-upload">
-                <p><label class="form-label" for="{{ f.id_for_label }}">{{f.label}} </label>{{ f }}</p>
+                <label class="form-label" for="{{ f.id_for_label }}">{{f.label}} </label>{{ f }}
         </div>
 
         <div id="preview"></div>
