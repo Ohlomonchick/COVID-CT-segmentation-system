@@ -20,6 +20,9 @@ class CT(models.Model):
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")
     semantic_map = models.BinaryField(verbose_name="Семантическая карта", null=True)
 
+    is_archive = models.ForeignKey('Archive', on_delete=models.PROTECT,
+                                   verbose_name="Архив, к которому принадлежит (если принадлежит)", null=True)
+
     def __str__(self):
         return f'#Процент поражения: {self.damage}'
 
