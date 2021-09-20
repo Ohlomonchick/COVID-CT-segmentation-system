@@ -203,7 +203,7 @@ form {
 /* ResultPage */
 .results {
     display: flex;
-    width: 340px;
+    margin-bottom: 15px;
     justify-content: space-between;
 }
 
@@ -212,6 +212,8 @@ form {
     font-weight: 500;
     font-size: 14px;
     margin-bottom: 20px;
+    position: relative;
+    margin-right: 30px;
 }
 
 .ground-glass::after,
@@ -219,6 +221,9 @@ form {
     color: gray;
     content: "Матовое стекло";
     font-size: 0.9vh;
+    position: absolute;
+    left: 0;
+    top: 15px;
 }
 
 .consolidation::after {
