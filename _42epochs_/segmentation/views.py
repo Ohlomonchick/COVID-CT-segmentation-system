@@ -2,13 +2,9 @@ import os
 import zipfile
 
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, FormView
+from django.views.generic import CreateView
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
-from django.views.generic.base import View
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import FormMixin
 
 from segmentation.models import *
 from segmentation.forms import AddCTForm, LayerSelectForm, ArchiveForm
@@ -17,7 +13,7 @@ from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_
 import numpy as np
 from PIL import Image
 from django.conf import settings
-from django.http import HttpResponse, Http404, FileResponse, HttpResponseForbidden
+from django.http import HttpResponse
 import magic
 import pickle
 import base64
@@ -43,11 +39,9 @@ def save_output_path(out, name: str, pk: int):
 
 
 def save_output_path_segments(out, name: str, pk: int):
-    # im = Image.fromarray(np.uint8(out)).convert('RGBA')
     global_save_path = os.path.join(settings.MEDIA_ROOT, 'images')
     save_path = os.path.normpath(os.path.join(global_save_path, name + str(pk) + '.png'))
 
-    # im.save(save_path, format='PNG')
     cv2.imwrite(save_path, out)
     return save_path
 
@@ -80,8 +74,6 @@ def process_image(path, ct, archive=None, create=True):
         diff2 = diff1 if diff % 2 == 0 else diff1 - 1
         img = img[0:img.shape[0], 0 + diff1:img.shape[1] - diff2]
 
-    # print(img.shape)
-
     img = cv2.resize(img, (512, 512))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -91,10 +83,6 @@ def process_image(path, ct, archive=None, create=True):
     (percentage1, title1), (percentage2, title2), out, category, semantic_map, orig_im = x.main()
 
     images = get_color_transp_ims(orig_im, semantic_map, [0, 1, 2], [[0, 0, 0, 255], [0, 0, 0, 255], [0, 0, 0, 255]])
-
-    print(str(title1) + ' ' + str(percentage1) + ' % ')
-    print(str(title2) + ' ' + str(percentage2) + ' % ')
-    print('Predicted category is - CT-', str(category))
 
     save_path = save_output_path(out=out, name='segmented_image_', pk=ct.pk)
 
@@ -116,6 +104,35 @@ def process_image(path, ct, archive=None, create=True):
         ct.is_archive = archive
 
     ct.save()
+
+
+def image_for_download(channels, colors, ct, archive=False):
+    img = cv2.imread(ct.ct_image.path)
+    img = cv2.resize(img, (512, 512))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    if archive:
+        if 0 in channels and ct.ground_glass == 0:
+            channels = [x for x in channels if x != 0]
+        if 1 in channels and ct.consolidation == 0:
+            channels = [x for x in channels if x != 1]
+
+        colors = [colors[channel] for channel in channels]
+
+    np_bytes = base64.b64decode(ct.semantic_map)
+    semantic_map = pickle.loads(np_bytes)
+
+    added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
+
+    cv2.imwrite(ct.segmented_image.path, added_im)
+
+
+def zip_dir(path, zipfile_handler):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zipfile_handler.write(os.path.join(root, file),
+                       os.path.relpath(os.path.join(root, file),
+                                       os.path.join(path, '..')))
 
 
 class AddCT(CreateView):
@@ -254,10 +271,6 @@ class ShowSegmented(CreateView):
             if os.path.isdir(zip_path):
                 shutil.rmtree(zip_path)
             os.mkdir(zip_path)
-            # tmp_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp'))
-            # if os.path.isdir(tmp_path):
-            #     shutil.rmtree(tmp_path)
-            #     os.mkdir(tmp_path)
             for found_ct in archive_cts:
                 new_path = os.path.join(zip_path, str("segmented_image_" + str(found_ct.id) + '.png'))
                 found_ct.segmented_image = os.path.normpath(new_path)
@@ -265,13 +278,13 @@ class ShowSegmented(CreateView):
 
                 description_name = str("segmented_image_" + str(found_ct.id) + '.txt')
                 description = f"""Общий процент процент поражения: {found_ct.damage}%
-Категория: {found_ct.category}\n"""
+Категория: КТ-{found_ct.category}\n"""
                 description += f"""Процент поражения Ground Glass (Матовое стекло): {found_ct.ground_glass}% | Цвет маски: {form.cleaned_data['ground_glass_color']}\n""" * (
                         found_ct.ground_glass != 0)
                 description += f"Процент поражения Consolidation (Матовое стекло): {found_ct.consolidation}% | Цвет маски: {form.cleaned_data['consolidation_color']}\n" * (
                         found_ct.consolidation != 0)
 
-                with open(os.path.join(zip_path, description_name), 'w') as description_f:
+                with open(os.path.join(zip_path, description_name), encoding='utf-8', mode='w') as description_f:
                     description_f.write(description)
 
             zip_handler = zipfile.ZipFile('tmp.zip', 'w', zipfile.ZIP_DEFLATED)
@@ -294,30 +307,3 @@ class ShowSegmented(CreateView):
         return response
 
 
-def image_for_download(channels, colors, ct, archive=False):
-    img = cv2.imread(ct.ct_image.path)
-    img = cv2.resize(img, (512, 512))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    if archive:
-        if 0 in channels and ct.ground_glass == 0:
-            channels = [x for x in channels if x != 0]
-        if 1 in channels and ct.consolidation == 0:
-            channels = [x for x in channels if x != 1]
-
-        colors = [colors[channel] for channel in channels]
-
-    np_bytes = base64.b64decode(ct.semantic_map)
-    semantic_map = pickle.loads(np_bytes)
-
-    added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
-
-    cv2.imwrite(ct.segmented_image.path, added_im)
-
-
-def zip_dir(path, zipfile_handler):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            zipfile_handler.write(os.path.join(root, file),
-                       os.path.relpath(os.path.join(root, file),
-                                       os.path.join(path, '..')))

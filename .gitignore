@@ -55,7 +55,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -112,8 +111,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-_42epochs_/media/images
-_42epochs_/media/archives
-_42epochs_/media/tmp_arch
-_42epochs_/media/tmp

@@ -61,20 +61,13 @@
 
             {%  if ct.is_archive %}
                 <button class="file-upload download-img" type="submit">Скачать архив</button>
+                <img class="wait-img" src="{% static 'segmentation/images/ZZ5H.gif' %}">
             {% else %}
                 <button class="file-upload download-img" type="submit">Скачать изображение</button>
             {% endif %}
             </form>
         </div>
     </div>
-
-{#    <h1>Маска: </h1>#}
-{#    {% if ct.mask %}#}
-{#    <p><img class="ct-mask" src="{{ ct.mask.url }}"></p>#}
-{#    {% endif %}#}
-
-
-<!--    <a class="segment"  href="{{ct.segmented_image.url}}" download>Скачать изображение</a>-->
     <a class="segment segment_main"  href="{% url 'home' %}">На главную</a>
 
     <script type="text/javascript">
@@ -84,5 +77,6 @@
     </script>
     <script type="text/javascript" src="{% static 'segmentation/js/label_select.js' %}"></script>
      <script type="text/javascript" src="{% static 'segmentation/js/color_select.js' %}"></script>
+    <script type="text/javascript" src="{% static 'segmentation/js/result_gif.js' %}"></script>
 
 {% endblock %}

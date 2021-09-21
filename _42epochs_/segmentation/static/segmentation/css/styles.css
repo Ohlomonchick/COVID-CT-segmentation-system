@@ -197,6 +197,11 @@ form {
     font-size: 18px;
     padding-top: 40px;
 }
+
+.wait-img {
+    width: 5vh;
+    display: none;
+}
 /* end MainPage */
 
 
