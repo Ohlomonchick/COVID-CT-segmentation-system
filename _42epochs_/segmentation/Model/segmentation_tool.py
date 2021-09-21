@@ -66,14 +66,19 @@ class Segmentation():
         return percentage, title
 
     @staticmethod
-    def put_masks(orig_im, semantic_map, channels=[], colors=[]):
+    def put_masks(orig_im, semantic_map, channels=[], colors=[], only_mask=False):
 
         # len(channels) must equal len(colors)
         # in channels: 0 - ground glass, 1 - consolidation, 2 - lung other, 3 - background
 
         assert len(channels) == len(colors)
 
-        image = cv2.cvtColor(orig_im, cv2.COLOR_GRAY2BGR)
+        if not only_mask:
+            image = cv2.cvtColor(orig_im, cv2.COLOR_GRAY2BGR)
+        else:
+            mask = np.uint8(semantic_map[:, :, 0:1])
+            # new_image = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+            image = mask
 
         for i in range(len(channels)):
             mask = np.uint8(semantic_map[:, :, channels[i]] * 255)

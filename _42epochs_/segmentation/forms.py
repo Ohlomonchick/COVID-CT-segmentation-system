@@ -115,6 +115,9 @@ class LayerSelectForm(forms.ModelForm):
     lung_other_color = forms.CharField(label='', max_length=7, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#0000FF')
 
+    only_mask = forms.BooleanField(label='Только маска', required=False, widget=forms.CheckboxInput(
+        attrs={'class': 'lung_other_checkbox layer_checkbox'}))
+
     class Meta:
         model = CT
         fields = []

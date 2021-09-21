@@ -106,7 +106,7 @@ def process_image(path, ct, archive=None, create=True):
     ct.save()
 
 
-def image_for_download(channels, colors, ct, archive=False):
+def image_for_download(channels, colors, ct, archive=False, only_mask=False):
     img = cv2.imread(ct.ct_image.path)
     img = cv2.resize(img, (512, 512))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -121,8 +121,7 @@ def image_for_download(channels, colors, ct, archive=False):
 
     np_bytes = base64.b64decode(ct.semantic_map)
     semantic_map = pickle.loads(np_bytes)
-
-    added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
+    added_im = Segmentation.put_masks(img, semantic_map, channels, colors, only_mask=only_mask)
 
     cv2.imwrite(ct.segmented_image.path, added_im)
 
@@ -272,11 +271,13 @@ class ShowSegmented(CreateView):
                 shutil.rmtree(zip_path)
             os.mkdir(zip_path)
             for found_ct in archive_cts:
-                new_path = os.path.join(zip_path, str("segmented_image_" + str(found_ct.id) + '.png'))
+                name = os.path.basename(found_ct.ct_image.path)[:-4] + '.png'
+                # new_path = os.path.join(zip_path, str("segmented_image_" + str(found_ct.id) + '.png'))
+                new_path = os.path.join(zip_path, name)
                 found_ct.segmented_image = os.path.normpath(new_path)
-                image_for_download(channels=channels, colors=colors, ct=found_ct, archive=arch)
+                image_for_download(channels=channels, colors=colors, ct=found_ct, archive=arch, only_mask=form.cleaned_data['only_mask'])
 
-                description_name = str("segmented_image_" + str(found_ct.id) + '.txt')
+                description_name = name[:-4] + '.txt'
                 description = f"""Общий процент процент поражения: {found_ct.damage}%
 Категория: КТ-{found_ct.category}\n"""
                 description += f"""Процент поражения Ground Glass (Матовое стекло): {found_ct.ground_glass}% | Цвет маски: {form.cleaned_data['ground_glass_color']}\n""" * (
@@ -297,7 +298,7 @@ class ShowSegmented(CreateView):
             filename = 'segmented_images_' + str(ct.id) + '.zip'
             response['Content-Disposition'] = 'attachment; filename="%s"' % filename
         else:
-            image_for_download(channels=channels, colors=colors, ct=ct)
+            image_for_download(channels=channels, colors=colors, ct=ct, only_mask=form.cleaned_data['only_mask'])
 
             image_buffer = open(ct.segmented_image.path, "rb").read()
             content_type = magic.from_buffer(image_buffer, mime=True)
