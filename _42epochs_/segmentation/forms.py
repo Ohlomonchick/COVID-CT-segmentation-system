@@ -95,11 +95,11 @@ class ArchiveForm(forms.ModelForm):
         unzip_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp_arch'))
         if os.path.isdir(unzip_path):
             shutil.rmtree(unzip_path)
-            os.mkdir(unzip_path)
+        os.mkdir(unzip_path)
         tmp_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp'))
         if os.path.isdir(tmp_path):
             shutil.rmtree(tmp_path)
-            os.mkdir(tmp_path)
+        os.mkdir(tmp_path)
         default_storage.save(os.path.join(tmp_path, str(archive)), ContentFile(archive.read()))
 
         patoolib.extract_archive(os.path.join(tmp_path, str(archive)), outdir=unzip_path)
@@ -110,18 +110,22 @@ class ArchiveForm(forms.ModelForm):
         return archive
 
 
-class LayerSelectForm(forms.Form):
+class LayerSelectForm(forms.ModelForm):
     ground_glass = forms.BooleanField(label='Матовое стекло', required=False, widget=forms.CheckboxInput(
         attrs={'checked': 'checked', 'class': 'ground_glass_checkbox layer_checkbox'}))
-    ground_glass_color = forms.CharField(label='', max_length=7, widget=forms.TextInput(
+    ground_glass_color = forms.CharField(label='', max_length=7,  required=False, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#FFFF00')
 
     consolidation = forms.BooleanField(label='Консолидация', required=False, widget=forms.CheckboxInput(
         attrs={'checked': 'checked', 'class': 'consolidation_checkbox layer_checkbox'}))
-    consolidation_color = forms.CharField(label='', max_length=7, widget=forms.TextInput(
+    consolidation_color = forms.CharField(label='', max_length=7,  required=False, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#FF0000')
 
-    lung_other = forms.BooleanField(label='Остальная часть лёгкого', required=False, widget=forms.CheckboxInput(
+    lung_other = forms.BooleanField(label='Остальная часть лёгкого',  required=False, widget=forms.CheckboxInput(
         attrs={'class': 'lung_other_checkbox layer_checkbox'}))
     lung_other_color = forms.CharField(label='', max_length=7, widget=forms.TextInput(
         attrs={'type': 'color', 'class': 'color-pick'}), initial='#0000FF')
+
+    class Meta:
+        model = CT
+        fields = []

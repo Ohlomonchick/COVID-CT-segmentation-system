@@ -1,10 +1,15 @@
 import os
+import zipfile
 
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
+from django.views.generic.base import View
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin
+
 from segmentation.models import *
 from segmentation.forms import AddCTForm, LayerSelectForm, ArchiveForm
 import cv2
@@ -12,7 +17,7 @@ from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_
 import numpy as np
 from PIL import Image
 from django.conf import settings
-from django.http import HttpResponse, Http404, FileResponse
+from django.http import HttpResponse, Http404, FileResponse, HttpResponseForbidden
 import magic
 import pickle
 import base64
@@ -56,7 +61,7 @@ def hex2bgr(h: str):
     return bgr
 
 
-def process_image(path, ct, archive=None):
+def process_image(path, ct, archive=None, create=True):
     img = cv2.imread(path)
     try:
         print(img.shape)
@@ -147,11 +152,11 @@ class AddArchive(CreateView):
         unzip_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp_arch'))
         if os.path.isdir(unzip_path):
             shutil.rmtree(unzip_path)
-            os.mkdir(unzip_path)
+        os.mkdir(unzip_path)
         tmp_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp'))
         if os.path.isdir(tmp_path):
             shutil.rmtree(tmp_path)
-            os.mkdir(tmp_path)
+        os.mkdir(tmp_path)
         default_storage.save(os.path.join(tmp_path, str(archive.archive_obj)), ContentFile(archive.archive_obj.read()))
 
         if os.path.isdir(unzip_path):
@@ -181,34 +186,47 @@ class AddArchive(CreateView):
         return redirect('result/' + str(ct_main.id))
 
 
-class ShowSegmented(DetailView, FormView):
+class ShowSegmented(CreateView):
+    form_class = LayerSelectForm
     model = CT
     template_name = 'segmentation/result.html'
     pk_url_kwarg = 'ct_pk'
     context_object_name = 'ct'
-    form_class = LayerSelectForm
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
+        ct = CT.objects.get(pk=self.kwargs['ct_pk'])
+        context['ct'] = ct
+        context.pop('object')
+        print(context)
         context['title'] = 'Результат'
-        if context['ct'].consolidation == 0:
-            context['form'].fields.pop('consolidation_color')
-            context['form'].fields.pop('consolidation')
-        if context['ct'].ground_glass == 0:
-            context['form'].fields.pop('ground_glass_color')
-            context['form'].fields.pop('ground_glass')
         print(context['form'].fields)
+        if not ct.is_archive:
+            if context['ct'].consolidation == 0:
+                context['form'].fields['consolidation_color'].widget.attrs['disabled'] = True
+                context['form'].fields['consolidation'].widget.attrs['disabled'] = True
+                context['form'].fields['consolidation_color'].widget.attrs['style'] = 'display: none;'
+                context['form'].fields['consolidation'].widget.attrs['style'] = 'display: none;'
+                context['form'].fields['consolidation'].label = ''
+            if context['ct'].ground_glass == 0:
+                context['form'].fields['ground_glass_color'].widget.attrs['disabled'] = True
+                context['form'].fields['ground_glass'].widget.attrs['disabled'] = True
+                context['form'].fields['ground_glass_color'].widget.attrs['style'] = 'display: none;'
+                context['form'].fields['ground_glass'].widget.attrs['style'] = 'display: none;'
+                context['form'].fields['ground_glass'].label = ''
+            print(context['form'].fields)
+        # print(context['ct'].__dict__)
+        context['ct'].save()
         return context
 
     def form_valid(self, form):
         print(form.cleaned_data)
-
+        print(self.kwargs['ct_pk'])
+        print('---------')
         ct = CT.objects.get(pk=self.kwargs['ct_pk'])
-        img = cv2.imread(ct.ct_image.path)
-        img = cv2.resize(img, (512, 512))
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        channels = []
 
+        channels = []
         if form.cleaned_data['ground_glass']:
             channels.append(0)
 
@@ -217,22 +235,89 @@ class ShowSegmented(DetailView, FormView):
 
         if form.cleaned_data['lung_other']:
             channels.append(2)
+        if not ct.is_archive:
+            colors = [hex2bgr(form.cleaned_data['ground_glass_color']) if ct.ground_glass != 0 else None,
+                      hex2bgr(form.cleaned_data['consolidation_color']) if ct.consolidation != 0 else None,
+                      hex2bgr(form.cleaned_data['lung_other_color'])]
+            colors = [colors[channel] for channel in channels]
+            arch = False
+        else:
+            colors = [hex2bgr(form.cleaned_data['ground_glass_color']),
+                      hex2bgr(form.cleaned_data['consolidation_color']),
+                      hex2bgr(form.cleaned_data['lung_other_color'])]
+            colors = [colors[channel] for channel in channels]
+            arch = True
 
-        colors = [hex2bgr(form.cleaned_data['ground_glass_color']),
-                  hex2bgr(form.cleaned_data['consolidation_color']),
-                  hex2bgr(form.cleaned_data['lung_other_color'])]
-        colors = [colors[channel] for channel in channels]
-        print(channels, colors)
+        if ct.is_archive:
+            archive_cts = CT.objects.all().filter(is_archive=ct.is_archive)
+            zip_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp_arch'))
+            if os.path.isdir(zip_path):
+                shutil.rmtree(zip_path)
+            os.mkdir(zip_path)
+            # tmp_path = os.path.normpath(os.path.join(settings.MEDIA_ROOT, 'tmp'))
+            # if os.path.isdir(tmp_path):
+            #     shutil.rmtree(tmp_path)
+            #     os.mkdir(tmp_path)
+            for found_ct in archive_cts:
+                new_path = os.path.join(zip_path, str("segmented_image_" + str(found_ct.id) + '.png'))
+                found_ct.segmented_image = os.path.normpath(new_path)
+                image_for_download(channels=channels, colors=colors, ct=found_ct, archive=arch)
 
-        np_bytes = base64.b64decode(ct.semantic_map)
-        semantic_map = pickle.loads(np_bytes)
+                description_name = str("segmented_image_" + str(found_ct.id) + '.txt')
+                description = f"""Общий процент процент поражения: {found_ct.damage}%
+Категория: {found_ct.category}\n"""
+                description += f"""Процент поражения Ground Glass (Матовое стекло): {found_ct.ground_glass}% | Цвет маски: {form.cleaned_data['ground_glass_color']}\n""" * (
+                        found_ct.ground_glass != 0)
+                description += f"Процент поражения Consolidation (Матовое стекло): {found_ct.consolidation}% | Цвет маски: {form.cleaned_data['consolidation_color']}\n" * (
+                        found_ct.consolidation != 0)
 
-        added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
+                with open(os.path.join(zip_path, description_name), 'w') as description_f:
+                    description_f.write(description)
 
-        cv2.imwrite(ct.segmented_image.path, added_im)
+            zip_handler = zipfile.ZipFile('tmp.zip', 'w', zipfile.ZIP_DEFLATED)
+            zip_dir(zip_path, zip_handler)
+            zip_handler.close()
 
-        image_buffer = open(ct.segmented_image.path, "rb").read()
-        content_type = magic.from_buffer(image_buffer, mime=True)
-        response = HttpResponse(image_buffer, content_type=content_type)
-        response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(ct.segmented_image.path)
+            file_buffer = open('tmp.zip', "rb").read()
+            content_type = magic.from_buffer(file_buffer, mime=True)
+            response = HttpResponse(file_buffer, content_type=content_type)
+            filename = 'segmented_images_' + str(ct.id) + '.zip'
+            response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+        else:
+            image_for_download(channels=channels, colors=colors, ct=ct)
+
+            image_buffer = open(ct.segmented_image.path, "rb").read()
+            content_type = magic.from_buffer(image_buffer, mime=True)
+            response = HttpResponse(image_buffer, content_type=content_type)
+            response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(ct.segmented_image.path)
+
         return response
+
+
+def image_for_download(channels, colors, ct, archive=False):
+    img = cv2.imread(ct.ct_image.path)
+    img = cv2.resize(img, (512, 512))
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    if archive:
+        if 0 in channels and ct.ground_glass == 0:
+            channels = [x for x in channels if x != 0]
+        if 1 in channels and ct.consolidation == 0:
+            channels = [x for x in channels if x != 1]
+
+        colors = [colors[channel] for channel in channels]
+
+    np_bytes = base64.b64decode(ct.semantic_map)
+    semantic_map = pickle.loads(np_bytes)
+
+    added_im = Segmentation.put_masks(img, semantic_map, channels, colors)
+
+    cv2.imwrite(ct.segmented_image.path, added_im)
+
+
+def zip_dir(path, zipfile_handler):
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            zipfile_handler.write(os.path.join(root, file),
+                       os.path.relpath(os.path.join(root, file),
+                                       os.path.join(path, '..')))

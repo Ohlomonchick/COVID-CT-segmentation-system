@@ -15,13 +15,19 @@
     <p class="result-text">Категория:<span class="percent">CT-{{ ct.category }}</span> </p>
     <div class="result-images">
         <div class="res-image res-image_first">
-            <h2>Исходное изображение: </h2>
+            {%  if ct.is_archive %}
+                <h2>Первое изображение архива: </h2>
+            {% else %}
+                <h2>Исходное изображение:</h2>
+            {% endif %}
+
             {% if ct.ct_image %}
             <img class="result-image ct-img" src="{{ ct.ct_image.url }}">
             {% endif %}
         </div>
         <div class="res-image">
             <h2>Сегментированное изображение: </h2>
+
             {% if ct.ct_image %}
                 <div class="ct-segmented">
                     <img src="{{ ct.ct_image.url }}">
@@ -53,7 +59,11 @@
                     {% endfor %}
                 </div>
 
+            {%  if ct.is_archive %}
+                <button class="file-upload download-img" type="submit">Скачать архив</button>
+            {% else %}
                 <button class="file-upload download-img" type="submit">Скачать изображение</button>
+            {% endif %}
             </form>
         </div>
     </div>
