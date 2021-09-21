@@ -71,9 +71,18 @@
     <a class="segment segment_main"  href="{% url 'home' %}">На главную</a>
 
     <script type="text/javascript">
-    $(document).ready(function() {
-        $('.footer').css({"margin-top": "5vh"});
-    });
+        $(document).ready(function() {
+            $('.footer').css({"margin-top": "5vh"});
+        });
+
+        $('.color-choice').each(function(i,elem) {
+            var el = $(this).find('input[type="checkbox"]')
+            var el2 = $(this).find('.form-label_color')
+
+            if ($(el).length && $(el2).length) {
+                el2.css({"display": "none"});
+            }
+        });
     </script>
     <script type="text/javascript" src="{% static 'segmentation/js/label_select.js' %}"></script>
      <script type="text/javascript" src="{% static 'segmentation/js/color_select.js' %}"></script>

@@ -193,7 +193,7 @@ form {
 .page_name {
     padding-bottom: 40px;
     color: #13a688;
-    font-weight: 400;
+    font-weight: 500;
     font-size: 18px;
     padding-top: 40px;
 }
@@ -301,7 +301,7 @@ form {
 
 .download-img{
     font-size: 14px;
-    margin-bottom: 25px;
+    margin-bottom: 5px;
     width: 220px;
     height: 45px;
     font-family: 'Roboto';
@@ -310,6 +310,7 @@ form {
     background: #000;
     border: 0;
     transition: 0.3s;
+    margin-right: 100px;
 }
 
 .download-img:hover{
