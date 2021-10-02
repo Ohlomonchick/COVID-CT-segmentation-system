@@ -5,13 +5,34 @@ import os
 import albumentations
 import cv2
 from PIL import Image
+from torch import nn
 from torchvision import transforms
 
 
+class MyEnsemble(nn.Module):
+
+    def __init__(self, modelA, modelB):
+        super(MyEnsemble, self).__init__()
+
+        self.modelA = modelA
+        self.modelB = modelB
+
+        self.Conv1 = nn.Conv2d(4, 4, 1, 1)
+
+    def forward(self, x):
+        out1 = self.modelA(x)
+        out2 = self.modelB(x)
+
+        out = out1 + out2
+
+        # x = self.Conv1(out)
+        return torch.softmax(out, dim=1)
+
+
 class Segmentation():
-    def __init__(self, image, path_to_model):
+    def __init__(self, image, model_ens):
         self.image = image
-        self.path_to_model = path_to_model
+        self.model_ens = model_ens
 
     def preprocess_image(self, image_arr, mean_std=None):
         image_arr[image_arr > 500] = 500
@@ -100,10 +121,12 @@ class Segmentation():
             return 4
 
     def main(self):
-        # device = torch.cuda.set_device(0)
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        model = torch.load(self.path_to_model)
+        # model_ens.to(device)
+        # model_ens.eval()
+
+        model = self.model_ens
         model = model.to(device)
         model.eval()
 

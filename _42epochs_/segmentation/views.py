@@ -1,6 +1,7 @@
 import os
 import zipfile
 
+import torch
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 from django.core.files.base import ContentFile
@@ -9,7 +10,7 @@ from django.core.files.storage import default_storage
 from segmentation.models import *
 from segmentation.forms import AddCTForm, LayerSelectForm, ArchiveForm
 import cv2
-from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_ims
+from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_ims, MyEnsemble
 import numpy as np
 from PIL import Image
 from django.conf import settings
@@ -21,7 +22,14 @@ import patoolib
 import shutil
 
 
-PATH_TO_MODEL = 'segmentation/Model/Unet_efficientnetb0.pth'
+PATH_TO_MODEL = 'segmentation/Model/Unet_7_epochs_0_644.pth'
+
+path_to_load1 = 'segmentation/Model/Unet_efficientnetb0.pth'
+model1 = torch.load(path_to_load1)
+path_to_load2 = 'segmentation/Model/PSPNet_efficientnetb1_cross_entropy_loss_14_epochs.pth'
+model2 = torch.load(path_to_load2)
+
+MODEL_ENS = MyEnsemble(model1, model2)
 
 
 def index(request):
@@ -63,23 +71,13 @@ def process_image(path, ct, archive=None, create=True):
         path = os.path.join(settings.MEDIA_ROOT, 'tmp')
         path = os.path.join(path, 'temporary.png')
         img = cv2.imread(path)
-    if img.shape[0] > img.shape[1]:
-        diff = img.shape[0] - img.shape[1]
-        diff1 = diff // 2
-        diff2 = diff1 if diff % 2 == 0 else diff1 - 1
-        img = img[0 + diff1:img.shape[0] - diff2, 0:img.shape[1]]
-    elif img.shape[0] < img.shape[1]:
-        diff = img.shape[1] - img.shape[0]
-        diff1 = diff // 2
-        diff2 = diff1 if diff % 2 == 0 else diff1 - 1
-        img = img[0:img.shape[0], 0 + diff1:img.shape[1] - diff2]
 
     img = cv2.resize(img, (512, 512))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     img = np.float32(img)
 
-    x = Segmentation(img, path_to_model=PATH_TO_MODEL)
+    x = Segmentation(img, model_ens=MODEL_ENS)
     (percentage1, title1), (percentage2, title2), out, category, semantic_map, orig_im = x.main()
 
     images = get_color_transp_ims(orig_im, semantic_map, [0, 1, 2], [[0, 0, 0, 255], [0, 0, 0, 255], [0, 0, 0, 255]])
@@ -88,6 +86,7 @@ def process_image(path, ct, archive=None, create=True):
 
     ct.segmented_image = save_path
     ct.damage = percentage1 + percentage2
+    print(percentage1, percentage2, ct.damage)
     ct.ground_glass = percentage1
     ct.consolidation = percentage2
     ct.category = category
@@ -232,7 +231,6 @@ class ShowSegmented(CreateView):
                 context['form'].fields['ground_glass'].widget.attrs['style'] = 'display: none;'
                 context['form'].fields['ground_glass'].label = ''
             print(context['form'].fields)
-        # print(context['ct'].__dict__)
         context['ct'].save()
         return context
 
@@ -272,7 +270,6 @@ class ShowSegmented(CreateView):
             os.mkdir(zip_path)
             for found_ct in archive_cts:
                 name = os.path.basename(found_ct.ct_image.path)[:-4] + '.png'
-                # new_path = os.path.join(zip_path, str("segmented_image_" + str(found_ct.id) + '.png'))
                 new_path = os.path.join(zip_path, name)
                 found_ct.segmented_image = os.path.normpath(new_path)
                 image_for_download(channels=channels, colors=colors, ct=found_ct, archive=arch, only_mask=form.cleaned_data['only_mask'])

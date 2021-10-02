@@ -18,27 +18,6 @@ def image_check(image):
     if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg' or image[-4:] == 'jpeg'):
         raise ValidationError('Доступна обработка только .png и .jpg изображений')
 
-    if type(image) != str:
-        tmp_path = os.path.join(settings.MEDIA_ROOT, 'tmp')
-        path = os.path.join(tmp_path, 'temporary.png')
-        if os.path.isdir(tmp_path):
-            shutil.rmtree(tmp_path)
-
-        os.mkdir(tmp_path)
-        tmp_file = default_storage.save('tmp/temporary.png', ContentFile(image.read()))
-        path = os.path.join(settings.MEDIA_ROOT, tmp_file)
-
-        pic = cv2.imread(path)
-    else:
-        pic = cv2.imread(image)
-
-    if pic.shape[0] < 256:
-        raise ValidationError('Необходимо изображение размером 256x256 и больше')
-    a = max(pic.shape[0:2])
-    b = min(pic.shape[0:2])
-    if b * 1.2 < a:
-        raise ValidationError('Необходимо изображение с соотношением сторон 1 к 1')
-
 
 class AddCTForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
