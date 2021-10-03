@@ -23,13 +23,7 @@ import shutil
 
 
 PATH_TO_MODEL = 'segmentation/Model/Unet_7_epochs_0_644.pth'
-
-path_to_load1 = 'segmentation/Model/Unet_efficientnetb0.pth'
-model1 = torch.load(path_to_load1)
-path_to_load2 = 'segmentation/Model/PSPNet_efficientnetb1_cross_entropy_loss_14_epochs.pth'
-model2 = torch.load(path_to_load2)
-
-MODEL_ENS = MyEnsemble(model1, model2)
+main_model = torch.load(PATH_TO_MODEL)
 
 
 def index(request):
@@ -66,7 +60,7 @@ def hex2bgr(h: str):
 def process_image(path, ct, archive=None, create=True):
     img = cv2.imread(path)
     try:
-        print(img.shape)
+        shape = img.shape
     except Exception:
         path = os.path.join(settings.MEDIA_ROOT, 'tmp')
         path = os.path.join(path, 'temporary.png')
@@ -77,7 +71,7 @@ def process_image(path, ct, archive=None, create=True):
 
     img = np.float32(img)
 
-    x = Segmentation(img, model_ens=MODEL_ENS)
+    x = Segmentation(img, model_ens=main_model)
     (percentage1, title1), (percentage2, title2), out, category, semantic_map, orig_im = x.main()
 
     images = get_color_transp_ims(orig_im, semantic_map, [0, 1, 2], [[0, 0, 0, 255], [0, 0, 0, 255], [0, 0, 0, 255]])
@@ -86,7 +80,7 @@ def process_image(path, ct, archive=None, create=True):
 
     ct.segmented_image = save_path
     ct.damage = percentage1 + percentage2
-    print(percentage1, percentage2, ct.damage)
+    # print(percentage1, percentage2, ct.damage)
     ct.ground_glass = percentage1
     ct.consolidation = percentage2
     ct.category = category
@@ -185,7 +179,6 @@ class AddArchive(CreateView):
 
         for file in os.listdir(unzip_path):
             file_path = os.path.normpath(os.path.join(unzip_path, file))
-            print(file_path)
             if not main_processed:
                 with open(file_path, 'rb') as f:
                     ct_main.ct_image.save(file, f)
@@ -197,7 +190,7 @@ class AddArchive(CreateView):
                     ct.ct_image.save(file, f)
                 process_image(path=file_path, ct=ct, archive=archive)
 
-        print(archive.archive_obj)
+        # print(archive.archive_obj)
         return redirect('result/' + str(ct_main.id))
 
 

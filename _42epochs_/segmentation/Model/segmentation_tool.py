@@ -130,6 +130,7 @@ class Segmentation():
         model = model.to(device)
         model.eval()
 
+
         # обработка
         image_processed, (mean, std) = self.preprocess_image(self.image)
         tfms = transforms.Compose([
