@@ -60,7 +60,7 @@ def hex2bgr(h: str):
 def process_image(path, ct, archive=None, create=True):
     img = cv2.imread(path)
     try:
-        shape = img.shape
+        shape = str(img.shape)
     except Exception:
         path = os.path.join(settings.MEDIA_ROOT, 'tmp')
         path = os.path.join(path, 'temporary.png')
