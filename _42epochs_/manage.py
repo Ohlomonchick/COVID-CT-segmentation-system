@@ -22,6 +22,7 @@ def main():
     execute_from_command_line(sys.argv)
 
 
+# Подгрузка ансамбля, старт системы
 if __name__ == '__main__':
     PATH_TO_MODEL = 'segmentation/Model/Unet_7_epochs_0_644.pth'
 

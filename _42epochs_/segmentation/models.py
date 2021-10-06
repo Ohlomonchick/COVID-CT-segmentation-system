@@ -2,6 +2,9 @@ from django.db import models
 
 
 class CT(models.Model):
+    """
+    Основная модель, которая хранит КТ и все его характеристики, включая маски и количественные данные
+    """
     ct_image = models.ImageField(upload_to="images", verbose_name="Выберите файл", null=True)
     segmented_image = models.ImageField(upload_to="segments/%Y/",  verbose_name="Сегментированное изображение", null=True)
     mask = models.ImageField(upload_to="masks",  verbose_name="Маска", null=True)
@@ -33,6 +36,9 @@ class CT(models.Model):
 
 
 class Archive(models.Model):
+    """
+    Модель Архива, к которой могут пренадлежать модели CT
+    """
     archive_obj = models.FileField(upload_to='archives', verbose_name="Выберите файл", null=True)
 
     class Meta:

@@ -3,8 +3,6 @@ import os
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
-import numpy as np
-import cv2
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
@@ -14,12 +12,14 @@ import patoolib
 import shutil
 
 
+# Функция проверки формата изображения
 def image_check(image):
     if not (str(image)[-3:] == 'png' or str(image)[-3:] == 'jpg' or image[-4:] == 'jpeg'):
         raise ValidationError('Доступна обработка только .png и .jpg изображений')
 
 
 class AddCTForm(forms.ModelForm):
+    """Форма загрузки КТ для сегментации"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['ct_image'].empty_label = "Изображение не загружено"
@@ -39,6 +39,9 @@ class AddCTForm(forms.ModelForm):
 
 
 class ArchiveForm(forms.ModelForm):
+    """
+    Форма загрузки архива для сегментации
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['archive_obj'].empty_label = "Архив не загружен"
@@ -52,6 +55,9 @@ class ArchiveForm(forms.ModelForm):
         }
 
     def clean_archive_obj(self):
+        """
+        Проверяет, действительно ли все файлы архива являются изображениями
+        """
         archive = self.files['archive_obj']
         arch_path = os.path.join(settings.MEDIA_ROOT, 'archives')
         arch_path = os.path.join(arch_path, str(archive))

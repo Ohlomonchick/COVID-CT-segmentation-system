@@ -1,7 +1,6 @@
 from django.urls import path
-from django.views.decorators.http import require_POST
 
-from segmentation.views import *
+from .views import *
 
 urlpatterns = [
     path('', AddCT.as_view(), name='home'),

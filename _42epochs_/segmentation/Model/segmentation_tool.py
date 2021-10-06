@@ -10,7 +10,9 @@ from torchvision import transforms
 
 
 class MyEnsemble(nn.Module):
-
+    """
+    Клас, позволяющий объединить 2 предварительно заруженные модели в ансамбль
+    """
     def __init__(self, modelA, modelB):
         super(MyEnsemble, self).__init__()
 
@@ -30,6 +32,7 @@ class MyEnsemble(nn.Module):
 
 
 class Segmentation():
+    """Основной класс, совершающий сегментацию"""
     def __init__(self, image, model_ens):
         self.image = image
         self.model_ens = model_ens
@@ -58,7 +61,6 @@ class Segmentation():
         return torch.from_numpy(semantic_map)
 
     def draw_masks(self, orig_im, mask, color1=[255, 255, 0], color2=[255, 0, 0]):
-        # lung = np.uint8(orig_im)
         lung = cv2.cvtColor(orig_im, cv2.COLOR_GRAY2BGR)
         mask_glass = np.uint8(mask[:, :, 0] * 255)
         mask_consolidation = np.uint8(mask[:, :, 1] * 255)
@@ -88,6 +90,10 @@ class Segmentation():
 
     @staticmethod
     def put_masks(orig_im, semantic_map, channels=[], colors=[], only_mask=False):
+        """
+        Накладывает на исходное изображение маски из списка channels с переданными цветами из colors
+        при only_mask=True - возвращает маски на чёрном фоне без исходного изображения
+        """
 
         # len(channels) must equal len(colors)
         # in channels: 0 - ground glass, 1 - consolidation, 2 - lung other, 3 - background
@@ -109,6 +115,9 @@ class Segmentation():
         return image
 
     def predict_cat(self, gr_glass, consolidation):
+        """
+        Определяет принадлежность КТ к одной из категорий категорий от КТ-1 до КТ-4
+        """
         if (consolidation == 0 and gr_glass == 0):
             return 0
         elif (consolidation == 0 and gr_glass < 25):
@@ -121,21 +130,21 @@ class Segmentation():
             return 4
 
     def main(self):
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        """
+        Основной процесс сегментации (переводит модель в .eval() режим
+        и пероизводит предварительную обработку изображения
 
-        # model_ens.to(device)
-        # model_ens.eval()
+        """
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
         model = self.model_ens
         model = model.to(device)
         model.eval()
 
-
         # обработка
         image_processed, (mean, std) = self.preprocess_image(self.image)
         tfms = transforms.Compose([
             transforms.ToPILImage(),
-            # transforms.Resize(256),
             transforms.ToTensor(),
             transforms.Normalize([0.485], [0.229])])
 
@@ -145,7 +154,6 @@ class Segmentation():
             output = model(img_tensor)
 
             mask_pred = torch.argmax(output, dim=1).cpu()
-            # mask_pred = np.asarray(mask_pred.to('cpu'), dtype=np.uint8) / 255
             mask_pred = mask_pred.squeeze(0)
 
         # сделать 4 канала
@@ -160,7 +168,6 @@ class Segmentation():
         category = self.predict_cat(percentage1, percentage2)
 
         # визуализация
-        # out = self.draw_masks(self.image, semantic_map)
         out = self.put_masks(self.image, semantic_map, [0, 2], [[255, 255, 0], [0, 0, 255]])
 
         return (percentage1, title1), (percentage2, title2), out, category, semantic_map, self.image
@@ -168,27 +175,27 @@ class Segmentation():
 
 def get_color_transp_ims(orig_im, semantic_map, channels=[], colors=[]):
 
-  assert len(channels) == len(colors)
+    assert len(channels) == len(colors)
 
-  images = []
-  for i in range(len(channels)):
-    result = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGBA)
-    binary = semantic_map[..., channels[i]]
-    color = colors[i]
-    result[:, :, 0] = binary * color[0]
-    result[:, :, 1] = binary * color[1]
-    result[:, :, 2] = binary * color[2]
-    result[:, :, 3] = binary * color[3]
+    images = []
+    for i in range(len(channels)):
+        result = cv2.cvtColor(orig_im, cv2.COLOR_BGR2RGBA)
+        binary = semantic_map[..., channels[i]]
+        color = colors[i]
+        result[:, :, 0] = binary * color[0]
+        result[:, :, 1] = binary * color[1]
+        result[:, :, 2] = binary * color[2]
+        result[:, :, 3] = binary * color[3]
 
-    # trans_mask = result[:, :, 3] == 0
-    # result[trans_mask] = [255, 255, 255, 255]
-    # tmp = cv2.cvtColor(result, cv2.COLOR_BGRA2BGR)
-    # V = cv2.cvtColor(tmp, cv2.COLOR_BGR2HSV)[..., 2]
-    # _, A = cv2.threshold(V, 100, 255, cv2.THRESH_BINARY_INV)
-    # result = np.dstack((tmp, A))
+        # trans_mask = result[:, :, 3] == 0
+        # result[trans_mask] = [255, 255, 255, 255]
+        # tmp = cv2.cvtColor(result, cv2.COLOR_BGRA2BGR)
+        # V = cv2.cvtColor(tmp, cv2.COLOR_BGR2HSV)[..., 2]
+        # _, A = cv2.threshold(V, 100, 255, cv2.THRESH_BINARY_INV)
+        # result = np.dstack((tmp, A))
 
     images.append(result)
 
-  return images
+    return images
 
 

@@ -7,10 +7,10 @@ from django.views.generic import CreateView
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 
-from segmentation.models import *
-from segmentation.forms import AddCTForm, LayerSelectForm, ArchiveForm
+from .models import *
+from .forms import AddCTForm, LayerSelectForm, ArchiveForm
 import cv2
-from segmentation.Model.segmentation_tool import Segmentation, get_color_transp_ims, MyEnsemble
+from .Model.segmentation_tool import Segmentation, get_color_transp_ims, MyEnsemble
 import numpy as np
 from PIL import Image
 from django.conf import settings
@@ -27,10 +27,14 @@ main_model = torch.load(PATH_TO_MODEL)
 
 
 def index(request):
+    """
+    Отображение главной страницы по шаблону index.html
+    """
     context = {'title': '42 EPOCHS'}
     return render(request, 'segmentation/index.html', context=context)
 
 
+# функции сохранения изображений в папку media
 def save_output_path(out, name: str, pk: int):
     im = Image.fromarray(np.uint8(out)).convert('RGB')
     global_save_path = os.path.join(settings.MEDIA_ROOT, 'images')
@@ -48,6 +52,7 @@ def save_output_path_segments(out, name: str, pk: int):
     return save_path
 
 
+# перевод информации о цвете из hex в rgb
 def hex2bgr(h: str):
     h = h.lstrip('#')
     rgb = list(int(h[i:i + 2], 16) for i in (0, 2, 4))
@@ -58,6 +63,10 @@ def hex2bgr(h: str):
 
 
 def process_image(path, ct, archive=None, create=True):
+    """
+    Основной процесс загрузки и подготовки изображений к сегментации.
+    После сегментации сохраняет маски и полученную информацию в базу данных
+    """
     img = cv2.imread(path)
     try:
         shape = str(img.shape)
@@ -100,6 +109,9 @@ def process_image(path, ct, archive=None, create=True):
 
 
 def image_for_download(channels, colors, ct, archive=False, only_mask=False):
+    """
+    Наложение масок на изображение исходя из выбора пользователя, подготовка к скачиванию
+    """
     img = cv2.imread(ct.ct_image.path)
     img = cv2.resize(img, (512, 512))
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -120,6 +132,9 @@ def image_for_download(channels, colors, ct, archive=False, only_mask=False):
 
 
 def zip_dir(path, zipfile_handler):
+    """
+    Функция запаковки архива для скачивания
+    """
     for root, dirs, files in os.walk(path):
         for file in files:
             zipfile_handler.write(os.path.join(root, file),
@@ -128,6 +143,9 @@ def zip_dir(path, zipfile_handler):
 
 
 class AddCT(CreateView):
+    """
+    - Класс обработки запросов с страницы загрузки изображения для сегментации
+    """
     form_class = AddCTForm
     template_name = 'segmentation/addpage.html'
     raise_exception = True
@@ -145,6 +163,11 @@ class AddCT(CreateView):
 
 
 class AddArchive(CreateView):
+    """
+    - Класс обработки запросов с страницы загрузки архива для сегментации
+
+    Производит распаковку архива и обработку каждого изображения в нём
+    """
     form_class = ArchiveForm
     template_name = 'segmentation/addarchive.html'
     raise_exception = True
@@ -195,6 +218,9 @@ class AddArchive(CreateView):
 
 
 class ShowSegmented(CreateView):
+    """
+    - Обработчик страницы с выводом сегментированного изображения
+    """
     form_class = LayerSelectForm
     model = CT
     template_name = 'segmentation/result.html'
@@ -202,6 +228,10 @@ class ShowSegmented(CreateView):
     context_object_name = 'ct'
 
     def get_context_data(self, *, object_list=None, **kwargs):
+        """
+        Производит подготовку формы перед её выводом
+        в зависимости от того, был ли загружен архив или одно изображение
+        """
         self.object = self.get_object()
         context = super().get_context_data(**kwargs)
         ct = CT.objects.get(pk=self.kwargs['ct_pk'])
@@ -228,9 +258,13 @@ class ShowSegmented(CreateView):
         return context
 
     def form_valid(self, form):
-        print(form.cleaned_data)
-        print(self.kwargs['ct_pk'])
-        print('---------')
+        """
+        1. Производит получение информаци из формы
+        2. Производит вызов функций обработки изображения и подготовки его к скачиванию
+
+        Если был загружен архив, то производит формирование архива с отсегментированными изображениями КТ и
+        файлами с описанием поражений, а также подготовку архива к скачиванию
+        """
         ct = CT.objects.get(pk=self.kwargs['ct_pk'])
 
         channels = []
