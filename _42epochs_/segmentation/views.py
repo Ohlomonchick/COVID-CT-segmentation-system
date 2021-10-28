@@ -10,7 +10,7 @@ from django.core.files.storage import default_storage
 from .models import *
 from .forms import AddCTForm, LayerSelectForm, ArchiveForm
 import cv2
-from .Model.segmentation_tool import Segmentation, get_color_transp_ims, MyEnsemble
+from .model.segmentation_tool import Segmentation, get_color_transp_ims, MyEnsemble
 import numpy as np
 from PIL import Image
 from django.conf import settings
