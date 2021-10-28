@@ -2,7 +2,6 @@ import torch
 import numpy as np
 import os
 # import matplotlib.pyplot as plt
-import albumentations
 import cv2
 from PIL import Image
 from torch import nn
