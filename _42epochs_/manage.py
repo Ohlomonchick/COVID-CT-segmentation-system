@@ -5,7 +5,7 @@ import sys
 
 import torch
 
-from segmentation.model.segmentation_tool import MyEnsemble
+from .segmentation.model.segmentation_tool import MyEnsemble
 
 
 def main():
