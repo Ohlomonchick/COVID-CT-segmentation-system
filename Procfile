@@ -1,0 +1,1 @@
+web: gunicorn _42_epochs_.wsgi --log-file -
