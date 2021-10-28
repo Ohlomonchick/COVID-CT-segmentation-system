@@ -20,7 +20,6 @@ Pillow==8.4.0
 pretrainedmodels==0.7.4
 pyparsing==2.4.7
 python-dateutil==2.8.2
-python-magic-bin==0.4.14
 pytz==2021.1
 PyWavelets==1.1.1
 PyYAML==5.4.1
