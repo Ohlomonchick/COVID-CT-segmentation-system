@@ -17,7 +17,7 @@ In this project we used data from different sources (3 datasets overall). The fi
 Model
 
 
-As a model we used ensemble consisting of a pretrained UNet model with backbone "EfficientNet-b0" and pretrained PSPNet with backbone “EfficientNet-b2” , trained for about an hour on 7 epochs. Loss function is CrossEntropy. Our mean IoU score is 0.644 and accuracy is 0.94.
+As a model we used ensemble consisting of a pretrained UNet model with backbone "EfficientNet-b0" and pretrained PSPNet with backbone “EfficientNet-b2” , trained for about an hour on 7 epochs. Loss function is CrossEntropy. Our mean IoU score is 0.744 and accuracy is 0.94.
 
 
 Results
@@ -67,8 +67,8 @@ Our GoogleColab notebook: https://colab.research.google.com/drive/1pcZDE0qGj8uoo
 
 
 
-Модель
-В качестве модели мы использовали ансамбль, состоящий из предобученной модели UNet с backbone «EfficientNet-b0» и предобученной модели PSPNet с backbone “EfficientNet-b2”, обученную чуть больше часа на 7 эпохах. Функция потерь - CrossEntropy. Метрика mean IoU составляет 0.644, а точность - 0.94.
+**Модель**
+В качестве модели мы использовали ансамбль, состоящий из предобученной модели UNet с backbone «EfficientNet-b0» и предобученной модели PSPNet с backbone “EfficientNet-b2”, обученную чуть больше часа на 7 эпохах. Функция потерь - CrossEntropy. Метрика mean IoU составляет 0.744, а точность - 0.94.
 
 
 Результаты
