@@ -5,7 +5,7 @@ Overview
 ***ENGLISH***
 
 
-As a part of the competition we present a model which is able to segment areas of ground glass and consolidation and determine the severity of the illness (from CT-0 for being healthy to CT-4 for the most severe stage) on CT scans of COVID-19 patients. 
+We present a model which is able to segment areas of ground glass and consolidation and determine the severity of the illness (from CT-0 for being healthy to CT-4 for the most severe stage) on CT scans of COVID-19 patients. 
 
 
 Data
@@ -51,8 +51,6 @@ How to run
 Useful links
 
 
-Competition's website: https://aiijc.com/ru/
-
 Our GitHub repository:https://github.com/Ohlomonchick/42-EPOCHS
 
 Our GoogleColab notebook: https://colab.research.google.com/drive/1pcZDE0qGj8uooFNYziMvP4p5vL61pMyM?usp=sharing
@@ -60,7 +58,7 @@ Our GoogleColab notebook: https://colab.research.google.com/drive/1pcZDE0qGj8uoo
 
 ***RUSSIAN***
 
-В рамках конкурса мы представляем модель, которая может сегментировать участки матового стекла и консолидации, а также определять тяжесть заболевания ( от КТ-0 для здорового человека до КТ-4 для наиболее тяжелой стадии заболевания) на компьютерной томографии COVID. -19 пациентов.
+Мы представляем модель, которая может сегментировать участки матового стекла и консолидации, а также определять тяжесть заболевания ( от КТ-0 для здорового человека до КТ-4 для наиболее тяжелой стадии заболевания) на компьютерной томографии COVID. -19 пациентов.
 
 
 Данные
@@ -85,11 +83,11 @@ Our GoogleColab notebook: https://colab.research.google.com/drive/1pcZDE0qGj8uoo
 
 
 Инструкция по запуску
-6. Отклонироваться от GitHub репозитория по ссылке ниже
-7. Установить необходимые библиотеки из файла requirements.txt с помощью команды **pip install -r requirements.txt**
-8. Перейти в папку 42 EPOCHS\\\_42epochs_
-9. Запустить из неё команду **python manage.py runserver**
-10. Перейти по ссылке, которая появится в консоли
+1. Отклонироваться от GitHub репозитория по ссылке ниже
+2. Установить необходимые библиотеки из файла requirements.txt с помощью команды **pip install -r requirements.txt**
+3. Перейти в папку 42 EPOCHS\\\_42epochs_
+4. Запустить из неё команду **python manage.py runserver**
+5. Перейти по ссылке, которая появится в консоли
   
 
 
@@ -99,6 +97,5 @@ Our GoogleColab notebook: https://colab.research.google.com/drive/1pcZDE0qGj8uoo
 
 
 Полезные ссылки
-Сайт конкурса: https://aiijc.com/ru/
 Наш репозиторий GitHub: https://github.com/Ohlomonchick/42-EPOCHS
 Копия нашего GoogleColab ноутбука: https://colab.research.google.com/drive/1pcZDE0qGj8uooFNYziMvP4p5vL61pMyM?usp=sharing
