@@ -1,4 +1,4 @@
-# 42-EPOCHS
+# COVID-CT-segmentation-system
  A neural network able to segment lung damage
 
 Overview
