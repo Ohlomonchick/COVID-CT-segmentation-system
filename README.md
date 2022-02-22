@@ -1,4 +1,5 @@
 # COVID-CT-segmentation-system
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/license/Ohlomonchick/COVID-CT-segmentation-system)
  A neural network able to segment lung damage
 
 Overview
