@@ -3,7 +3,7 @@
 ## COVID-CT-segmentation-system
  A web system embedded with neural network able to segment lung damage
 
-![interface](https://github.com/Ohlomonchick/COVID-CT-segmentation-system/raw/main/images/interface.png)
+![interface](https://github.com/Ohlomonchick/COVID-CT-segmentation-system/blob/main/images/interface.png?raw=true)
 
 Overview
 
